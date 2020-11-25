@@ -8,6 +8,7 @@ import java.util.List;
 public class Test {
 	public static void main(String[] args) throws IOException {
 		
+		
 		List<Integer> list= new ArrayList<>();
 		list.addAll(Arrays.asList(12));
 		
