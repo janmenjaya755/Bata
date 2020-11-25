@@ -11,6 +11,7 @@ public class Test {
 		List<Integer> list= new ArrayList<>();
 		list.addAll(Arrays.asList(12));
 		
+		
 		List<String> list1= new ArrayList<>();
 		list1.addAll(Arrays.asList("BILL16092020aaaaaaaa"));
 		String test = null;
