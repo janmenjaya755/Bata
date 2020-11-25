@@ -15,7 +15,6 @@ public class Test {
 		list1.addAll(Arrays.asList("BILL16092020aaaaaaaa"));
 		String test = null;
 		for(int i=0; i<list1.size();i++) {
-			
 			String s =list1.get(i);
 			int size2 =list.get(i);
 			StringBuffer buf = new StringBuffer(s);
