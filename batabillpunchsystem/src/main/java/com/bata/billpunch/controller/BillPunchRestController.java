@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -283,7 +284,6 @@ public class BillPunchRestController {
 
 	}
 
-
 	/********************************************************************************************
 	 * Find All bill punch data by passing
 	 ********************************************************************************************/
@@ -297,6 +297,7 @@ public class BillPunchRestController {
 		request.setToken(getToken(req));
 		TokenResponse response = restTemplate.postForEntity(tokenurl, request, TokenResponse.class).getBody();
 		List<BillPunchResponseDto> list = new ArrayList<>();
+		List<String> list1 = new ArrayList<>();
 		BillPurchaseCostInterface vm = null;
 		if (response.getStatus().contentEquals("True")) {
 
@@ -305,33 +306,47 @@ public class BillPunchRestController {
 
 			if (Optional.ofNullable(cm).isPresent()) {
 				for (BillPunchResponseInterface xm : cm) {
+					if (!list.isEmpty() && !list1.isEmpty() && list1.contains(xm.getinvoiceNO())) {
 
-					
-					BillPunchResponseDto m = new BillPunchResponseDto();
-					m.setBillOrderDate(xm.getbillOrderDate());
-					m.setBillOrderNo(xm.getbillOrderNo());
-					m.setFormtype(xm.getformtype());
-					m.setInvdate(xm.getinvdate());
-					m.setGrnDate(xm.getcnDate());
-					m.setBillWeek(xm.getbillWeek());
-					m.setInvAmount(xm.getrdcAmount());
-					m.setInvoiceNO(xm.getinvoiceNO());
-					m.setPartyCode(xm.getpartyCode());
-					m.setPartyName(xm.getpartyName());
-					m.setTcsApplicable(xm.gettcsApplicable());
-					if (Optional.ofNullable(xm.getdiscountAmt()).isPresent()) {
-						String s = xm.getdiscountAmt() + "%";
-						m.setDiscountAmt(s);
-					}
+						Double amt = list.get(list.size() - 1).getPurchaseCost();
+						try {
+							String s1 = "0" + xm.getinvoiceNO().substring(2, 6);
+							vm = mservices.getOrderPurchaseCost(s1, xm.getbillOrderNo(), xm.getpartyCode(),
+									xm.getarticleCode());
+							Double mt = vm.getpurchaseCost() * Integer.parseInt(xm.getpair());
+							amt += mt;
 
-					m.setStatus(xm.getstatus());
-					if ("manual".equalsIgnoreCase(xm.getformtype())) {
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						list.get(list.size() - 1).setPurchaseCost(amt);
 
-						List<BillPunchDetailsModel> xn = services.getByOrdNo(xm.getbillOrderNo());
-						m.setPurchaseCost(xn.get(0).getPurchaseCost());
 					} else {
+						BillPunchResponseDto m = new BillPunchResponseDto();
+						m.setInvoiceNO(xm.getinvoiceNO());
+						m.setBillOrderDate(xm.getbillOrderDate());
+						m.setBillOrderNo(xm.getbillOrderNo());
+						m.setFormtype(xm.getformtype());
+						m.setInvdate(xm.getinvdate());
+						m.setGrnDate(xm.getcnDate());
+						m.setBillWeek(xm.getbillWeek());
+						m.setInvAmount(xm.getrdcAmount());
+						m.setPartyCode(xm.getpartyCode());
+						m.setPartyName(xm.getpartyName());
+						m.setTcsApplicable(xm.gettcsApplicable());
+						if (Optional.ofNullable(xm.getdiscountAmt()).isPresent()) {
+							String s = xm.getdiscountAmt() + "%";
+							m.setDiscountAmt(s);
+						}
 
-						Double amt = 0d;
+						m.setStatus(xm.getstatus());
+						if ("manual".equalsIgnoreCase(xm.getformtype())) {
+
+							List<BillPunchDetailsModel> xn = services.getByOrdNo(xm.getbillOrderNo());
+							m.setPurchaseCost(xn.get(0).getPurchaseCost());
+						} else {
+
+							Double amt = 0d;
 							try {
 								String s1 = "0" + xm.getinvoiceNO().substring(2, 6);
 								vm = mservices.getOrderPurchaseCost(s1, xm.getbillOrderNo(), xm.getpartyCode(),
@@ -342,14 +357,27 @@ public class BillPunchRestController {
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
-						m.setPurchaseCost(amt);
+							m.setPurchaseCost(amt);
+
+						}
+						list.add(m);
+						list1.add(xm.getinvoiceNO());
 
 					}
 
-					list.add(m);
+				}
+				for (BillPunchResponseDto xs : list) {
+
+					List<BillPunchDetailsModel> bm = services.updatePurchaseCostDetails(xs.getInvoiceNO());
+					for (BillPunchDetailsModel cv : bm) {
+						if(!Optional.ofNullable(cv.getPurchaseCost()).isPresent()) {
+							cv.setPurchaseCost(xs.getPurchaseCost());
+							services.save(cv);
+						}
+						
+					}
 
 				}
-
 				rs.setStatus(ReraMessageConstants.SUCCESS_STATUS);
 				rs.setMessage(ReraMessageConstants.SUCCESS_MESSAGE);
 				rs.setData(list);
@@ -393,21 +421,6 @@ public class BillPunchRestController {
 				BillPunchDto entity = new BillPunchDto();
 				for (BillPunchDetailsModel pm : cm) {
 
-					List<OrdersMasterModel> mb = mservices.getOrderDetails(pm.getBillOrderNo());
-					Double amt = 0d;
-					for (OrdersMasterModel mn : mb) {
-						try {
-							String s1 = "0" + pm.getInvoiceNO().substring(2, 6);
-							vm = mservices.getOrderPurchaseCost(s1, pm.getBillOrderNo(),
-									String.valueOf(pm.getPartyCode()), mn.getArtno());
-							Double mt = vm.getpurchaseCost() * Integer.parseInt(mn.getOrderPr());
-							amt += mt;
-
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-
 					RdcDetailsDto mn = new RdcDetailsDto();
 
 					if (!map1.containsKey(pm.getBillOrderNo())) {
@@ -420,7 +433,7 @@ public class BillPunchRestController {
 							List<BillPunchDetailsModel> xn = services.getByOrdNo(pm.getBillOrderNo());
 							entity.setPurchaseCost(xn.get(0).getPurchaseCost());
 						} else {
-							entity.setPurchaseCost(amt);
+							entity.setPurchaseCost(pm.getPurchaseCost());
 						}
 
 						entity.setBillUniqueCode(pm.getBillUniqueCode());
@@ -465,7 +478,7 @@ public class BillPunchRestController {
 						} else {
 							mn.setReceiveDate(pm.getRecptInvDate());
 						}
-						
+
 						mn.setNoOfCartons(pm.getNoOfCartons());
 						if (Optional.ofNullable(mn.getArticleCode()).isPresent()
 								|| Optional.ofNullable(mn.getReceiveDate()).isPresent()
@@ -596,7 +609,6 @@ public class BillPunchRestController {
 		return ResponseEntity.ok(rs);
 
 	}
-
 
 	/********************************************************************************************
 	 * Update billpunch details by check box
@@ -798,7 +810,7 @@ public class BillPunchRestController {
 					list.add(vm);
 				}
 			} catch (Exception e) {
-                  e.printStackTrace();
+				e.printStackTrace();
 			}
 
 			if (!list.isEmpty()) {

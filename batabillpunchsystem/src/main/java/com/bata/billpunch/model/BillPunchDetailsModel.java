@@ -136,7 +136,7 @@ public class BillPunchDetailsModel implements Serializable {
 	private String stateCode;
 
 	@Column(name = "PRCH_BIL_VAL")
-	private Double purchaseCost;
+	private Double invoiceCost;
 
 	@Column(name = "RCPT_INV_DATE")
 	private Date recptInvDate;
@@ -244,8 +244,8 @@ public class BillPunchDetailsModel implements Serializable {
 	@Column(name = "STATUS")
 	private String status;
 
-	@Column(name = "INVOICE_COST")
-	private Double invoiceCost;
+	@Column(name = "PURCHASE_COST")
+	private Double purchaseCost;
 
 	@Column(name = "TCS_VALUE ")
 	private Double tcsValue;

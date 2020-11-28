@@ -1067,7 +1067,7 @@ public class BillReportRestController {
 						} catch (Exception e) {
 						}
 
-						xm.setPurchaseCost(x34);
+						xm.setInvoiceCost(x34);
 						xm.setRecptInvNo(x35);
 						xm.setGrNo(x35);
 						xm.setRecptInvDate(x36);

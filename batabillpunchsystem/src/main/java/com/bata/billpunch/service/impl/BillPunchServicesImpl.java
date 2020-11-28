@@ -357,6 +357,12 @@ public class BillPunchServicesImpl {
 
 		return bdao.findWithAllApproved(wk);
 	}
+	
+	public List<BillPunchDetailsModel> updatePurchaseCostDetails(String invno) {
+
+		return bdao.findwithInvNo(invno);
+	}
+
 
 	@SuppressWarnings("all")
 	public BillPunchDetailsModel getById(Long id) {

@@ -27,7 +27,7 @@ public interface BillPunchDetailsDao extends JpaRepository<BillPunchDetailsModel
 	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where a.WK like ?1 and a.STATUS='APPROVED'")
 	public List<BillPunchDetailsModel> findWithAllApproved(String wk);
 
-	@Query(nativeQuery = true, value = "select a.TOT_PAIRS as pair,a.ART_CODE as articleCode,a.WK as billWeek,a.CN_DATE as cnDate,a.TCS_APPLICABLE as tcsApplicable,a.RCPT_INV_DATE as invdate ,a.DISCOUNT_AMT as discountAmt ,a.PRCH_BIL_VAL as rdcAmount ,a.TR_INV_NO as invoiceNO,a.ORD_NO as billOrderNo,a.form_type as formtype,a.PARTY_CODE as partyCode,a.party_name as partyName,a.status,a.bill_order_date as billOrderDate from  TT_BILL_PUNCH_DTLS_ONE a where  (COALESCE(:invoiceNO, null) is null or a.TR_INV_NO in :invoiceNO) and (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:billOrderNo, null) is null or a.ORD_NO in :billOrderNo) and (COALESCE(:uniquecode, null) is null or a.SEQ_NO in :uniquecode) and (COALESCE(:status, null) is null or a.STATUS in :status) group by a.PRCH_BIL_VAL,a.TR_INV_NO,a.ORD_NO,a.form_type,a.PARTY_CODE,a.party_name,a.status,a.bill_order_date,a.DISCOUNT_AMT,a.RCPT_INV_DATE,a.TCS_APPLICABLE,a.CN_DATE,a.WK,a.ART_CODE,a.TOT_PAIRS")
+	@Query(nativeQuery = true, value = "select a.TOT_PAIRS as pair,a.ART_CODE as articleCode,a.WK as billWeek,a.CN_DATE as cnDate,a.TCS_APPLICABLE as tcsApplicable,a.RCPT_INV_DATE as invdate ,a.DISCOUNT_AMT as discountAmt ,a.PRCH_BIL_VAL as rdcAmount ,a.TR_INV_NO as invoiceNO,a.ORD_NO as billOrderNo,a.form_type as formtype,a.PARTY_CODE as partyCode,a.party_name as partyName,a.status,a.bill_order_date as billOrderDate from  TT_BILL_PUNCH_DTLS_ONE a where  (COALESCE(:invoiceNO, null) is null or a.TR_INV_NO in :invoiceNO) and (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:billOrderNo, null) is null or a.ORD_NO in :billOrderNo) and (COALESCE(:uniquecode, null) is null or a.SEQ_NO in :uniquecode) and (COALESCE(:status, null) is null or a.STATUS in :status) group by a.PRCH_BIL_VAL,a.TR_INV_NO,a.ORD_NO,a.form_type,a.PARTY_CODE,a.party_name,a.status,a.bill_order_date,a.DISCOUNT_AMT,a.RCPT_INV_DATE,a.TCS_APPLICABLE,a.CN_DATE,a.WK,a.ART_CODE,a.TOT_PAIRS order by a.TR_INV_NO asc")
 	public List<BillPunchResponseInterface> findWithBillNoPartyCodeAndOrderNoTest(@Param("invoiceNO") String invoiceNO,
 			@Param("partycode") String partycode, @Param("billOrderNo") String billOrderNo,
 			@Param("uniquecode") String uniquecode, @Param("status") String status);
@@ -42,6 +42,9 @@ public interface BillPunchDetailsDao extends JpaRepository<BillPunchDetailsModel
 
 	@Query(nativeQuery = true, value = "SELECT a.* FROM TT_BILL_PUNCH_DTLS_ONE a where a.SEQ_NO like ?1")
 	public List<BillPunchDetailsModel> findwithAllDetailsByUniqueId(String uniqueId);
+	
+	@Query(nativeQuery = true, value = "SELECT a.* FROM TT_BILL_PUNCH_DTLS_ONE a where a.TR_INV_NO like ?1")
+	public List<BillPunchDetailsModel> findwithInvNo(String invno);
 
 	@Query(nativeQuery = true, value = "SELECT a.* FROM TT_BILL_PUNCH_DTLS_ONE a where a.ORD_NO like ?1")
 	public List<BillPunchDetailsModel> findwithAllDetailsByOrdNo(String ordno);
