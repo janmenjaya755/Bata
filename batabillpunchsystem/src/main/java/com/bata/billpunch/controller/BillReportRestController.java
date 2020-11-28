@@ -407,8 +407,8 @@ public class BillReportRestController {
 	 * @throws IOException
 	 ********************************************************************************************/
 	@SuppressWarnings("all")
-	@GetMapping("/get-bill-punch-contract-batch-report-details")
-	public ResponseEntity<ResponseModel> getReportForContractBatchFile(HttpServletRequest req) throws IOException {
+	@GetMapping("/get-bill-punch-contract-batch-report-details/{wk}")
+	public ResponseEntity<ResponseModel> getReportForContractBatchFile(HttpServletRequest req, @PathVariable("wk") String wk) throws IOException {
 		ResponseModel rs = new ResponseModel();
 		RestTemplate restTemplate = new RestTemplate();
 		TokenRequest request = new TokenRequest();
@@ -416,9 +416,9 @@ public class BillReportRestController {
 		TokenResponse response = restTemplate.postForEntity(tokenurl, request, TokenResponse.class).getBody();
 		if (response.getStatus().contentEquals("True")) {
 			String w1 = null;
-			List<AdonisFileDetailsInterface> xm = mservices.getAdonisDetails();
+			List<AdonisFileDetailsInterface> xm = mservices.getAdonisDetails(wk);
 			List<OrdersMasterModel> odm = mservices.getOrderDetails(xm.get(0).getordno());
-			TotalAmtInterface totalamt = mservices.getTotalAmountForAdonis();
+			TotalAmtInterface totalamt = mservices.getTotalAmountForAdonis(wk);
 			AdonisMasterModel ad = adservices.getAdonisDetails();
 			String[] st = odm.get(0).getPartyCode().split("");
 			String app = null;
@@ -761,8 +761,8 @@ public class BillReportRestController {
 	 * @throws IOException
 	 ********************************************************************************************/
 	@SuppressWarnings("all")
-	@GetMapping("/get-bill-punch-xl-report-details-for-supply")
-	public ResponseEntity<ResponseModel> getXlReport(HttpServletRequest req) throws IOException {
+	@GetMapping("/get-bill-punch-xl-report-details-for-supply/{wk}")
+	public ResponseEntity<ResponseModel> getXlReport(HttpServletRequest req, @PathVariable("wk") String wk) throws IOException {
 		ResponseModel rs = new ResponseModel();
 		RestTemplate restTemplate = new RestTemplate();
 		TokenRequest request = new TokenRequest();
@@ -770,7 +770,7 @@ public class BillReportRestController {
 		TokenResponse response = restTemplate.postForEntity(tokenurl, request, TokenResponse.class).getBody();
 
 		if (response.getStatus().contentEquals("True")) {
-			List<BillPunchDetailsModel> xm = services.findAllApprovedDetails();
+			List<BillPunchDetailsModel> xm = services.findAllApprovedDetails(wk);
 			List<OrdersMasterModel> odm = mservices.getOrderDetails(xm.get(0).getBillOrderNo());
 			String[] st = odm.get(0).getPartyCode().split("");
 			String app = null;
@@ -1052,7 +1052,7 @@ public class BillReportRestController {
 
 						try {
 							xm.setPartyName(
-									pservices.getPartiesDetails(r.getCell(24).getStringCellValue()).getPartyfullname());
+									pservices.getPartiesDetails(StringUtils.leftPad(r.getCell(24).getStringCellValue(), 4, "0")).getPartyfullname());
 						} catch (Exception e) {
 						}
 

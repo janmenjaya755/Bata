@@ -283,104 +283,6 @@ public class BillPunchRestController {
 
 	}
 
-	/********************************************************************************************
-	 * Find bill punch data by passing primarykey
-	 ********************************************************************************************/
-	@SuppressWarnings("all")
-	@GetMapping("/getdetails-by-uniqueId/{uniqueId}")
-	public ResponseEntity<ResponseModel> getDetailsByUniqueId(@PathVariable(value = "uniqueId") String uniqueId,
-			HttpServletRequest req) {
-
-		ResponseModel rs = new ResponseModel();
-		RestTemplate restTemplate = new RestTemplate();
-		TokenRequest request = new TokenRequest();
-		request.setToken(getToken(req));
-		TokenResponse response = restTemplate.postForEntity(tokenurl, request, TokenResponse.class).getBody();
-
-		if (response.getStatus().contentEquals("True")) {
-			List<BillPunchDetailsModel> cm = services.getByUniqueId(uniqueId);
-			List<BillPunchDto> list1 = new ArrayList<>();
-			List<RdcDetailsDto> list11 = new ArrayList<>();
-			BillPunchDto entity = new BillPunchDto();
-			for (BillPunchDetailsModel pm : cm) {
-
-				RdcDetailsDto mn = new RdcDetailsDto();
-
-				if (Optional.ofNullable(pm.getBillUniqueCode()).isPresent()) {
-					if (!list1.contains(pm.getBillOrderNo())) {
-						entity.setBillCloseStatus(pm.getBillCloseStatus());
-						entity.setPurchaseCost(pm.getPurchaseCost());
-						entity.setFormtype(pm.getFormtype());
-						entity.setInvoiceNO(pm.getInvoiceNO());
-						entity.setGrNo(pm.getGrNo());
-						entity.setGrDate(pm.getGrDate());
-						entity.setBillUniqueCode(pm.getBillUniqueCode());
-						entity.setBillOrderDate(pm.getBillOrderDate());
-						entity.setBillOrderNo(pm.getBillOrderNo());
-						entity.setBillWeekYear(pm.getBillWeekYear());
-						entity.setcPair(pm.getcPair());
-						entity.setPair(pm.getPair());
-						entity.setShopName(pm.getShopName());
-						entity.setShopNo(pm.getShopNo());
-						entity.setTotalCost(pm.getTotalCost());
-						entity.setCreatedOn(Calendar.getInstance());
-						entity.setFreight(pm.getFreight());
-						entity.setStatus(pm.getStatus());
-						entity.setStateCode(pm.getStateCode());
-						entity.setIgst(pm.getIgst());
-						entity.setCgst(pm.getCgst());
-						entity.setSgst(pm.getSgst());
-						entity.setPartyCode(pm.getPartyCode());
-						entity.setPartyName(pm.getPartyName());
-						entity.setRegion(pm.getRegion());
-						entity.setStateName(pm.getStateName());
-						entity.setCreditNote(pm.getCreditNote());
-
-						list1.add(entity);
-						mn.setRdcPair(pm.getRdcPair());
-						mn.setBillId(pm.getBilId());
-						mn.setRdcPair(pm.getRdcPair());
-						mn.setWeekYear(pm.getWeekYear());
-						mn.setArticleCode(pm.getArticleCode());
-						mn.setPairAmount(pm.getPairAmount());
-						mn.setReceiveDate(pm.getRecptInvDate());
-						list11.add(mn);
-
-					} else {
-						mn.setRdcPair(pm.getRdcPair());
-						mn.setBillId(pm.getBilId());
-						mn.setRdcPair(pm.getRdcPair());
-						mn.setWeekYear(pm.getWeekYear());
-						mn.setArticleCode(pm.getArticleCode());
-						mn.setPairAmount(pm.getPairAmount());
-						mn.setReceiveDate(pm.getRecptInvDate());
-						list11.add(mn);
-					}
-					entity.setRdcList(list11);
-
-				}
-
-			}
-
-			if (Optional.ofNullable(entity).isPresent()) {
-				rs.setStatus(ReraMessageConstants.SUCCESS_STATUS);
-				rs.setMessage(ReraMessageConstants.SUCCESS_MESSAGE);
-				rs.setData(entity);
-			} else {
-				rs.setData(null);
-				rs.setStatus(ReraMessageConstants.FAILED_STATUS);
-				rs.setMessage(ReraMessageConstants.FAILED_MESSAGE);
-
-			}
-		} else {
-			rs.setData(null);
-			rs.setStatus(ReraMessageConstants.NOT_AUTHORIZED);
-			rs.setMessage(ReraMessageConstants.NOT_AUTHORIZED_MESSAGE);
-		}
-
-		return ResponseEntity.ok(rs);
-
-	}
 
 	/********************************************************************************************
 	 * Find All bill punch data by passing
@@ -404,11 +306,7 @@ public class BillPunchRestController {
 			if (Optional.ofNullable(cm).isPresent()) {
 				for (BillPunchResponseInterface xm : cm) {
 
-					/*
-					 * BillPunchDetailsModel bm =
-					 * mservices.getDetailsByOrderNoAndInvoiceNo(xm.getbillOrderNo(),
-					 * xm.getinvoiceNO());
-					 */
+					
 					BillPunchResponseDto m = new BillPunchResponseDto();
 					m.setBillOrderDate(xm.getbillOrderDate());
 					m.setBillOrderNo(xm.getbillOrderNo());
@@ -433,20 +331,17 @@ public class BillPunchRestController {
 						m.setPurchaseCost(xn.get(0).getPurchaseCost());
 					} else {
 
-						List<OrdersMasterModel> mb = mservices.getOrderDetails(xm.getbillOrderNo());
 						Double amt = 0d;
-						for (OrdersMasterModel mn : mb) {
 							try {
 								String s1 = "0" + xm.getinvoiceNO().substring(2, 6);
 								vm = mservices.getOrderPurchaseCost(s1, xm.getbillOrderNo(), xm.getpartyCode(),
-										mn.getArtno());
-								Double mt = vm.getpurchaseCost() * Integer.parseInt(mn.getOrderPr());
+										xm.getarticleCode());
+								Double mt = vm.getpurchaseCost() * Integer.parseInt(xm.getpair());
 								amt += mt;
 
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
-						}
 						m.setPurchaseCost(amt);
 
 					}
@@ -702,56 +597,6 @@ public class BillPunchRestController {
 
 	}
 
-	/********************************************************************************************
-	 * Update billpunch details
-	 ********************************************************************************************/
-	@PostMapping("/update-billpunch-details")
-	public ResponseEntity<ResponseModel> updateBillPunchDetails(@RequestBody BillPunchDto entity,
-			HttpServletRequest req) {
-		ResponseModel rs = new ResponseModel();
-		RestTemplate restTemplate = new RestTemplate();
-		TokenRequest request = new TokenRequest();
-		request.setToken(getToken(req));
-		TokenResponse response = null;
-		response = restTemplate.postForEntity(tokenurl, request, TokenResponse.class).getBody();
-
-		if (response.getStatus().contentEquals("True")) {
-			List<BillPunchDetailsModel> cm = services.update(entity);
-			if (!cm.isEmpty()) {
-				try {
-					ApprovalDetailsModel mn = new ApprovalDetailsModel();
-					List<ApprovalDetailsModel> list1 = new ArrayList<>();
-					mn.setBillUniqueCode(cm.get(0).getBillUniqueCode());
-
-					mn.setFinUserStatus(cm.get(0).getStatus());
-					if (Optional.ofNullable(response.getUsername()).isPresent()) {
-						mn.setFinUserName(response.getUsername());
-						mn.setUserRole(response.getUserrole());
-					}
-					ApprovalDetailsModel xm = services.getApprovalDetails(mn);
-					list1.add(xm);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				rs.setStatus(ReraMessageConstants.SUCCESS_STATUS);
-				rs.setMessage(ReraMessageConstants.SUCCESS_MESSAGE);
-				rs.setData(cm);
-			} else {
-				rs.setData(null);
-				rs.setStatus(ReraMessageConstants.FAILED_STATUS);
-				rs.setMessage(ReraMessageConstants.FAILED_MESSAGE);
-
-			}
-
-		} else {
-			rs.setData(null);
-			rs.setStatus(ReraMessageConstants.NOT_AUTHORIZED);
-			rs.setMessage(ReraMessageConstants.NOT_AUTHORIZED_MESSAGE);
-		}
-		return ResponseEntity.ok(rs);
-
-	}
 
 	/********************************************************************************************
 	 * Update billpunch details by check box
@@ -953,7 +798,7 @@ public class BillPunchRestController {
 					list.add(vm);
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
+                  e.printStackTrace();
 			}
 
 			if (!list.isEmpty()) {

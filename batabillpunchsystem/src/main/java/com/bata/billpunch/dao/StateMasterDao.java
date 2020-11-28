@@ -20,7 +20,7 @@ public interface StateMasterDao extends JpaRepository<StateMasterModel, Long>{
 		@Query(nativeQuery = true ,value="TRUNCATE TABLE tm_state_master_dtls")
 		 void findWithDeleteAll();
 		
-		@Query(nativeQuery = true, value = "select a.* from  tm_state_master_dtls a where TRIM(a.STATENAME) like ?1 ")
+		@Query(nativeQuery = true, value = "select a.* from  tm_state_master_dtls a where TRIM(a.STATENAME) like UPPER(?1)")
 		public List<StateMasterModel> findWithStateDetails(String statename);
 		
 		

@@ -19,7 +19,7 @@ public interface CategoriesMasterDao extends JpaRepository<CategoriesMasterModel
 		@Query(nativeQuery = true ,value="TRUNCATE TABLE tm_category_master_dtls")
 		 void findWithDeleteAll();
 		
-		@Query(nativeQuery = true, value = "select a.* from  TM_CATEGORY_MASTER_DTLS a where TRIM(a.CATNAME) like ?1 ")
+		@Query(nativeQuery = true, value = "select a.* from  TM_CATEGORY_MASTER_DTLS a where TRIM(a.CATNAME) like UPPER(?1) ")
 		public List<CategoriesMasterModel> findWithCatDetails(String catname);
 
 }

@@ -89,28 +89,8 @@ public class BillPunchMasterServicesImpl {
 
 	public List<ArticlesMasterModel> findWithArticleDetails(String artname, String billno, String partycode,
 			String orderno) {
-		List<ArticlesMasterModel> bm = null;
-		List<OrdersMasterModel> od = null;
-		if (billno == null) {
-			billno = "%";
-		}
-		if (partycode == null) {
-			partycode = "%";
-		}
 
-		if (orderno == null) {
-			orderno = "%";
-		}
-
-		try {
-			od = ordao.findWithBillOrderDetails(billno, partycode, orderno);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		bm = ardao.findWithArticleDetails(artname);
-
-		return bm;
+		return ardao.findWithArticleDetails(artname);
 
 	}
 
@@ -133,8 +113,7 @@ public class BillPunchMasterServicesImpl {
 	public List<BillPunchResponseInterface> getDetailsByBillNo(String invoiceNO, String partycode, String orederno,
 			String uniquecode, String status) {
 
-		return   bdao.findWithBillNoPartyCodeAndOrderNoTest(invoiceNO, partycode, orederno,
-				uniquecode, status);
+		return bdao.findWithBillNoPartyCodeAndOrderNoTest(invoiceNO, partycode, orederno, uniquecode, status);
 	}
 
 	public BillPunchDetailsModel getDetailsByOrderNoAndInvoiceNo(String orderno, String invno) {
@@ -161,8 +140,9 @@ public class BillPunchMasterServicesImpl {
 	public List<WeekMasterModel> findDetails() {
 		return wdao.findAll();
 	}
+
 	@SuppressWarnings("all")
-	public List<BillPunchDetailsModel> updateByCheckBox(List<BillPunchResponse> entity,String userName) {
+	public List<BillPunchDetailsModel> updateByCheckBox(List<BillPunchResponse> entity, String userName) {
 		List<BillPunchDetailsModel> list = new ArrayList<>();
 		for (BillPunchResponse xm : entity) {
 
@@ -182,7 +162,7 @@ public class BillPunchMasterServicesImpl {
 
 						if (d2.compareTo(d1) >= 0) {
 							if (d2.compareTo(d3) <= 0) {
-								vm.setBillCloseWeek(Integer.parseInt( lm.getBataWeek()));
+								vm.setBillCloseWeek(Integer.parseInt(lm.getBataWeek()));
 							}
 						}
 
@@ -201,7 +181,7 @@ public class BillPunchMasterServicesImpl {
 
 				if ("yes".equalsIgnoreCase(xm.getTcsApplicable())) {
 					vm.setTcsApplicable(xm.getTcsApplicable());
-					
+
 					if (!Optional.ofNullable(vm.getIgst()).isPresent()) {
 						vm.setIgst(0);
 					}
@@ -248,6 +228,7 @@ public class BillPunchMasterServicesImpl {
 		return list;
 
 	}
+
 	@SuppressWarnings("all")
 	public List<BillPunchDetailsModel> getDetailsByBillNoTest(String invno, String xyz, String ordno, String pk,
 			String ss) {
@@ -266,20 +247,20 @@ public class BillPunchMasterServicesImpl {
 	public List<BillPunchDetailsModel> getDetailsByFilter(String invoiceNO, String partyCode, String billOrderNo,
 			String billUniqueCode, String status) {
 
-		return bdao.findWithBillNoPartyCodeAndOrderNo(invoiceNO, partyCode, billOrderNo,billUniqueCode, status);
-				
+		return bdao.findWithBillNoPartyCodeAndOrderNo(invoiceNO, partyCode, billOrderNo, billUniqueCode, status);
+
 	}
 
 	public List<BillPunchDetailsModel> getReportDetailsByWeek(String wk) {
 		return bdao.findWithBillReportByWeek(wk);
 	}
-	
-	public TotalAmtInterface getTotalAmountForAdonis() {
-		return bdao.findWithTotalAmt();
+
+	public TotalAmtInterface getTotalAmountForAdonis(String wk) {
+		return bdao.findWithTotalAmt(wk);
 	}
-	
-	public List<AdonisFileDetailsInterface> getAdonisDetails() {
-		return bdao.findWithAdonisFileDetails();
+
+	public List<AdonisFileDetailsInterface> getAdonisDetails(String wk) {
+		return bdao.findWithAdonisFileDetails(wk);
 	}
-	
+
 }

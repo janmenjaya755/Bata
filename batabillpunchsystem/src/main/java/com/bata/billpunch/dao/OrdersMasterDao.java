@@ -34,8 +34,11 @@ public interface OrdersMasterDao extends JpaRepository<OrdersMasterModel, Long>{
 		@Query(nativeQuery = true,value = "SELECT a.ORDER_PR as orderPr FROM tm_orders_master_dtls a where a.ARTNO like ?1 and  a.ORDERNO like ?2 ")
 		public OrderPair findWithPairByOrderNoAndArtno(String artno,String orderno);
 		
-		@Query(nativeQuery = true,value = "SELECT a.PURPRICE as purprice FROM tm_orders_master_dtls a where a.ARTNO like ?1")
-		public PriceInterface findWithPriceByArtno(String artno);
+		/*
+		 * @Query(nativeQuery = true,value =
+		 * "SELECT a.PURPRICE as purprice FROM tm_orders_master_dtls a where a.ARTNO like ?1"
+		 * ) public PriceInterface findWithPriceByArtno(String artno);
+		 */
 
 		
 		@Query(nativeQuery = true,value = "SELECT a.* FROM tm_orders_master_dtls a where a.ARTNO like ?1 and  a.ORDERNO like ?2 ")

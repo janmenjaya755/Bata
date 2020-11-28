@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.bata.billpunch.dao.ApprovalDetailsDao;
+import com.bata.billpunch.dao.ArticlesMasterDao;
 import com.bata.billpunch.dao.BillPunchDetailsDao;
 import com.bata.billpunch.dao.BillPunchDetailsDemoDao;
 import com.bata.billpunch.dao.BillPunchMasterDao;
@@ -43,6 +44,9 @@ public class BillPunchServicesImpl {
 
 	@Autowired
 	private OrdersMasterDao odao;
+	
+	@Autowired
+	private ArticlesMasterDao artdao;
 
 	@Autowired
 	private BillPunchMasterDao bmdao;
@@ -349,9 +353,9 @@ public class BillPunchServicesImpl {
 		return bdao.findAll();
 	}
 	
-	public List<BillPunchDetailsModel> findAllApprovedDetails() {
+	public List<BillPunchDetailsModel> findAllApprovedDetails(String wk) {
 
-		return bdao.findWithAllApproved();
+		return bdao.findWithAllApproved(wk);
 	}
 
 	@SuppressWarnings("all")
@@ -526,7 +530,7 @@ public class BillPunchServicesImpl {
 	}
 
 	public PriceInterface getPriceDetailsByartno(String atrno) {
-		return odao.findWithPriceByArtno(atrno);
+		return artdao.findWithPriceByArtno(atrno);
 	}
 
 	public List<BillPunchDetailsModel> getDetailsStrazaReport(List<String> partycode, String fromwk, String towk,

@@ -4,6 +4,8 @@ public interface BillPurchaseCostInterface {
 
 
 	public Double getpurchaseCost();
+	
+	public String getorderpr();
 
 	
 	

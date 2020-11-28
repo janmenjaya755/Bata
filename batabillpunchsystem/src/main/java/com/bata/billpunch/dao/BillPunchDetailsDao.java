@@ -24,10 +24,10 @@ public interface BillPunchDetailsDao extends JpaRepository<BillPunchDetailsModel
 	@Query(nativeQuery = true, value = "TRUNCATE TABLE TT_BILL_PUNCH_DTLS_ONE")
 	void findWithDeleteAll();
 	
-	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where a.ORD_NO='F0D1834'")
-	public List<BillPunchDetailsModel> findWithAllApproved();
+	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where a.WK like ?1 and a.STATUS='APPROVED'")
+	public List<BillPunchDetailsModel> findWithAllApproved(String wk);
 
-	@Query(nativeQuery = true, value = "select a.WK as billWeek,a.CN_DATE as cnDate,a.TCS_APPLICABLE as tcsApplicable,a.RCPT_INV_DATE as invdate ,a.DISCOUNT_AMT as discountAmt ,a.PRCH_BIL_VAL as rdcAmount ,a.TR_INV_NO as invoiceNO,a.ORD_NO as billOrderNo,a.form_type as formtype,a.PARTY_CODE as partyCode,a.party_name as partyName,a.status,a.bill_order_date as billOrderDate from  TT_BILL_PUNCH_DTLS_ONE a where  (COALESCE(:invoiceNO, null) is null or a.TR_INV_NO in :invoiceNO) and (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:billOrderNo, null) is null or a.ORD_NO in :billOrderNo) and (COALESCE(:uniquecode, null) is null or a.SEQ_NO in :uniquecode) and (COALESCE(:status, null) is null or a.STATUS in :status) group by a.INVOICE_COST,a.PRCH_BIL_VAL,a.TR_INV_NO,a.ORD_NO,a.form_type,a.PARTY_CODE,a.party_name,a.status,a.bill_order_date,a.DISCOUNT_AMT,a.RCPT_INV_DATE,a.TCS_APPLICABLE,a.CN_DATE,a.WK")
+	@Query(nativeQuery = true, value = "select a.TOT_PAIRS as pair,a.ART_CODE as articleCode,a.WK as billWeek,a.CN_DATE as cnDate,a.TCS_APPLICABLE as tcsApplicable,a.RCPT_INV_DATE as invdate ,a.DISCOUNT_AMT as discountAmt ,a.PRCH_BIL_VAL as rdcAmount ,a.TR_INV_NO as invoiceNO,a.ORD_NO as billOrderNo,a.form_type as formtype,a.PARTY_CODE as partyCode,a.party_name as partyName,a.status,a.bill_order_date as billOrderDate from  TT_BILL_PUNCH_DTLS_ONE a where  (COALESCE(:invoiceNO, null) is null or a.TR_INV_NO in :invoiceNO) and (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:billOrderNo, null) is null or a.ORD_NO in :billOrderNo) and (COALESCE(:uniquecode, null) is null or a.SEQ_NO in :uniquecode) and (COALESCE(:status, null) is null or a.STATUS in :status) group by a.PRCH_BIL_VAL,a.TR_INV_NO,a.ORD_NO,a.form_type,a.PARTY_CODE,a.party_name,a.status,a.bill_order_date,a.DISCOUNT_AMT,a.RCPT_INV_DATE,a.TCS_APPLICABLE,a.CN_DATE,a.WK,a.ART_CODE,a.TOT_PAIRS")
 	public List<BillPunchResponseInterface> findWithBillNoPartyCodeAndOrderNoTest(@Param("invoiceNO") String invoiceNO,
 			@Param("partycode") String partycode, @Param("billOrderNo") String billOrderNo,
 			@Param("uniquecode") String uniquecode, @Param("status") String status);
@@ -73,15 +73,15 @@ public interface BillPunchDetailsDao extends JpaRepository<BillPunchDetailsModel
 			@Param("yr") String yr);
 	
 	//@Query(nativeQuery = true, value = "SELECT distinct a.* FROM TT_BILL_PUNCH_DTLS_ONE a  where a.C_WEEK like ?1 and a.STATUS='APPROVED'")
-	@Query(nativeQuery = true, value = "SELECT distinct a.* FROM TT_BILL_PUNCH_DTLS_ONE a  where  a.ORD_NO='F0D1834'")
-	public List<BillPunchDetailsModel> findWithBillReportByWeek(String Week);
+	@Query(nativeQuery = true, value = "SELECT distinct a.* FROM TT_BILL_PUNCH_DTLS_ONE a  where  a.WK like ?1 and and a.STATUS='APPROVED'")
+	public List<BillPunchDetailsModel> findWithBillReportByWeek(String wk);
 	
 	//@Query(nativeQuery = true, value = "SELECT  a.* FROM TT_BILL_PUNCH_DTLS_ONE a  where a.STATUS='APPROVED'")
-	@Query(nativeQuery = true, value = "SELECT SUM(SQ.COST)as totalcost FROM (SELECT DISTINCT a.TR_INV_NO as TR_INV_NO,a.INVOICE_COST as COST FROM TT_BILL_PUNCH_DTLS_ONE a) SQ")
-	public TotalAmtInterface findWithTotalAmt();
+	@Query(nativeQuery = true, value = "SELECT SUM(SQ.COST)as totalcost FROM (SELECT DISTINCT a.TR_INV_NO as TR_INV_NO,a.INVOICE_COST as COST FROM TT_BILL_PUNCH_DTLS_ONE a where a.WK like ?1 and a.STATUS='APPROVED' ) SQ")
+	public TotalAmtInterface findWithTotalAmt(String wk);
 	
 	 //@Query(nativeQuery = true, value = "SELECT a.TR_INV_NO as invno,a.INVOICE_COST as invcost, a.INV_TYPE as invtype FROM TT_BILL_PUNCH_DTLS_ONE a where a.STATUS='APPROVED' group by a.TR_INV_NO,a.INVOICE_COST, a.INV_TYPE")
-		@Query(nativeQuery = true, value = "SELECT a.RDC_CODE as rdcno,a.PARTY as party,a.DISTRC_CODE as distcode,a.ORD_NO as ordno,a.TR_INV_NO as invno,a.INVOICE_COST as invcost, a.INV_TYPE as invtype,a.RCPT_INV_DATE as invdate,a.CN_DATE as grndate,a.TOT_PAIRS as pairs FROM TT_BILL_PUNCH_DTLS_ONE a where a.TR_INV_NO is not null and a.ORD_NO='F0D1834' group by a.TR_INV_NO,a.INVOICE_COST, a.INV_TYPE,a.RCPT_INV_DATE,a.CN_DATE,a.TOT_PAIRS,a.PARTY ,a.DISTRC_CODE,a.ORD_NO,a.RDC_CODE")
-	    public List<AdonisFileDetailsInterface> findWithAdonisFileDetails();
+		@Query(nativeQuery = true, value = "SELECT a.RDC_CODE as rdcno,a.PARTY as party,a.DISTRC_CODE as distcode,a.ORD_NO as ordno,a.TR_INV_NO as invno,a.INVOICE_COST as invcost, a.INV_TYPE as invtype,a.RCPT_INV_DATE as invdate,a.CN_DATE as grndate,a.TOT_PAIRS as pairs FROM TT_BILL_PUNCH_DTLS_ONE a where a.WK like ?1 and  a.TR_INV_NO is not null and a.STATUS='APPROVED' group by a.TR_INV_NO,a.INVOICE_COST, a.INV_TYPE,a.RCPT_INV_DATE,a.CN_DATE,a.TOT_PAIRS,a.PARTY ,a.DISTRC_CODE,a.ORD_NO,a.RDC_CODE")
+	    public List<AdonisFileDetailsInterface> findWithAdonisFileDetails(String wk);
 
 }
