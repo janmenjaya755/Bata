@@ -21,6 +21,10 @@ public interface BillPunchResponseInterface {
 	public String getstatus();
 
 	public String getarticleCode();
+	
+	public String getpurchaseCost();
+	
+	public String getpurchaseoffValue();
 
 	public String getinvoiceNO();
 

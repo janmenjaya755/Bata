@@ -13,6 +13,7 @@ import com.bata.billpunch.model.dto.AdonisFileDetailsInterface;
 import com.bata.billpunch.model.dto.BillCloseStatusDto;
 import com.bata.billpunch.model.dto.BillPunchResponseInterface;
 import com.bata.billpunch.model.dto.PartyResponseDto;
+import com.bata.billpunch.model.dto.PurchaseCostInterface;
 import com.bata.billpunch.model.dto.TotalAmtInterface;
 
 @Repository
@@ -27,13 +28,19 @@ public interface BillPunchDetailsDao extends JpaRepository<BillPunchDetailsModel
 	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where a.WK like ?1 and a.STATUS='APPROVED'")
 	public List<BillPunchDetailsModel> findWithAllApproved(String wk);
 
-	@Query(nativeQuery = true, value = "select a.TOT_PAIRS as pair,a.ART_CODE as articleCode,a.WK as billWeek,a.CN_DATE as cnDate,a.TCS_APPLICABLE as tcsApplicable,a.RCPT_INV_DATE as invdate ,a.DISCOUNT_AMT as discountAmt ,a.PRCH_BIL_VAL as rdcAmount ,a.TR_INV_NO as invoiceNO,a.ORD_NO as billOrderNo,a.form_type as formtype,a.PARTY_CODE as partyCode,a.party_name as partyName,a.status,a.bill_order_date as billOrderDate from  TT_BILL_PUNCH_DTLS_ONE a where  (COALESCE(:invoiceNO, null) is null or a.TR_INV_NO in :invoiceNO) and (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:billOrderNo, null) is null or a.ORD_NO in :billOrderNo) and (COALESCE(:uniquecode, null) is null or a.SEQ_NO in :uniquecode) and (COALESCE(:status, null) is null or a.STATUS in :status) group by a.PRCH_BIL_VAL,a.TR_INV_NO,a.ORD_NO,a.form_type,a.PARTY_CODE,a.party_name,a.status,a.bill_order_date,a.DISCOUNT_AMT,a.RCPT_INV_DATE,a.TCS_APPLICABLE,a.CN_DATE,a.WK,a.ART_CODE,a.TOT_PAIRS order by a.TR_INV_NO asc")
+	@Query(nativeQuery = true, value = "select x.purchaseoffValue,x.pair,x.billWeek,x.cnDate,x.tcsApplicable,x.invdate,x.discountAmt,x.rdcAmount,x.invoiceNO,x.billOrderNo,x.formtype,x.partyCode,x.partyName,x.billOrderDate, sum(x.purchasePrice*x.pair)as purchaseCost from (select a.PURCHASE_COST as purchaseoffValue,a.ART_CODE as artCode,a.TOT_PAIRS as pair,a.WK as billWeek,a.CN_DATE as cnDate,a.TCS_APPLICABLE as tcsApplicable, a.RCPT_INV_DATE as invdate , a.DISCOUNT_AMT as discountAmt ,a.PRCH_BIL_VAL as rdcAmount ,a.TR_INV_NO as invoiceNO,a.ORD_NO as billOrderNo,a.form_type as formtype, a.PARTY_CODE as partyCode,a.party_name as partyName,a.status,a.bill_order_date as billOrderDate ,a.RDC_CODE as rdcCode,c.PURPRICE as purchasePrice from  TT_BILL_PUNCH_DTLS_ONE a  join tm_orders_master_dtls c on a.ORD_NO=c.ORDERNO and a.PARTY_CODE=c.PARTY_CODE and a.RDC_CODE=c.RDCNO and a.ART_CODE=c.ARTNO where (COALESCE(:invoiceNO, null) is null or a.TR_INV_NO in :invoiceNO) and (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:billOrderNo, null) is null or a.ORD_NO in :billOrderNo) and (COALESCE(:uniquecode, null) is null or a.SEQ_NO in :uniquecode) and (COALESCE(:status, null) is null or a.STATUS in :status) group by  a.PURCHASE_COST,a.PRCH_BIL_VAL,a.TR_INV_NO,a.ORD_NO,a.form_type,a.PARTY_CODE,a.party_name,a.status,a.bill_order_date,a.DISCOUNT_AMT, a.RCPT_INV_DATE,a.TCS_APPLICABLE,a.CN_DATE,a.WK,a.TOT_PAIRS ,a.ART_CODE,a.RDC_CODE,c.PURPRICE)x group by x.pair,x.billWeek,x.cnDate,x.tcsApplicable,x.invdate,x.discountAmt,x.rdcAmount,x.invoiceNO,x.billOrderNo,x.formtype,x.partyCode,x.partyName,x.billOrderDate,x.purchaseoffValue")
 	public List<BillPunchResponseInterface> findWithBillNoPartyCodeAndOrderNoTest(@Param("invoiceNO") String invoiceNO,
 			@Param("partycode") String partycode, @Param("billOrderNo") String billOrderNo,
 			@Param("uniquecode") String uniquecode, @Param("status") String status);
 
-	@Query(nativeQuery = true, value = "select  a.* from  TT_BILL_PUNCH_DTLS_ONE a where  (COALESCE(:invoiceNO, null) is null or a.TR_INV_NO in :invoiceNO) and (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:billOrderNo, null) is null or a.ORD_NO in :billOrderNo) and (COALESCE(:uniquecode, null) is null or a.SEQ_NO in :uniquecode) and (COALESCE(:status, null) is null or a.STATUS in :status) ")
+	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where (COALESCE(:invoiceNO, null) is null or a.TR_INV_NO in :invoiceNO) and (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:billOrderNo, null) is null or a.ORD_NO in :billOrderNo) and (COALESCE(:uniquecode, null) is null or a.SEQ_NO in :uniquecode) and (COALESCE(:status, null) is null or a.STATUS in :status)")
 	public List<BillPunchDetailsModel> findWithBillNoPartyCodeAndOrderNo(@Param("invoiceNO") String invoiceNO,
+			@Param("partycode") String partycode, @Param("billOrderNo") String billOrderNo,
+			@Param("uniquecode") String uniquecode, @Param("status") String status);
+
+	
+	@Query(nativeQuery = true, value = "select sum(x.purchasePrice*x.pair)as purchaseCost from (select c.PURPRICE as purchasePrice,a.TOT_PAIRS as pair from  TT_BILL_PUNCH_DTLS_ONE a  join tm_orders_master_dtls c on a.ORD_NO=c.ORDERNO and a.PARTY_CODE=c.PARTY_CODE and a.RDC_CODE=c.RDCNO and a.ART_CODE=c.ARTNO where (COALESCE(:invoiceNO, null) is null or a.TR_INV_NO in :invoiceNO) and (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:billOrderNo, null) is null or a.ORD_NO in :billOrderNo) and (COALESCE(:uniquecode, null) is null or a.SEQ_NO in :uniquecode) and (COALESCE(:status, null) is null or a.STATUS in :status)  group by  a.ORD_NO,a.PARTY_CODE,a.TOT_PAIRS ,a.ART_CODE,a.RDC_CODE,c.PURPRICE)x")
+	public PurchaseCostInterface findWithPurchaseCost(@Param("invoiceNO") String invoiceNO,
 			@Param("partycode") String partycode, @Param("billOrderNo") String billOrderNo,
 			@Param("uniquecode") String uniquecode, @Param("status") String status);
 

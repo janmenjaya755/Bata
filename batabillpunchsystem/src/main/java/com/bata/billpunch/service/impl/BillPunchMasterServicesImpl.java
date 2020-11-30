@@ -38,6 +38,7 @@ import com.bata.billpunch.model.dto.BillPunchResponseInterface;
 import com.bata.billpunch.model.dto.BillPurchaseCostInterface;
 import com.bata.billpunch.model.dto.PartyNameCodeDto;
 import com.bata.billpunch.model.dto.PartyResponseDto;
+import com.bata.billpunch.model.dto.PurchaseCostInterface;
 import com.bata.billpunch.model.dto.TotalAmtInterface;
 
 @Service
@@ -248,6 +249,14 @@ public class BillPunchMasterServicesImpl {
 			String billUniqueCode, String status) {
 
 		return bdao.findWithBillNoPartyCodeAndOrderNo(invoiceNO, partyCode, billOrderNo, billUniqueCode, status);
+
+	}
+
+	
+	public PurchaseCostInterface getPurchaseCost(String invoiceNO, String partyCode, String billOrderNo,
+			String billUniqueCode, String status) {
+
+		return bdao.findWithPurchaseCost(invoiceNO, partyCode, billOrderNo, billUniqueCode, status);
 
 	}
 

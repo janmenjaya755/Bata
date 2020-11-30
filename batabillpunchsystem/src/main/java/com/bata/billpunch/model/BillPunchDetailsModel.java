@@ -37,7 +37,7 @@ public class BillPunchDetailsModel implements Serializable {
 	private Long bilId;
 
 	@Column(name = "RDC_CODE")
-	private Integer rdcCode;
+	private String rdcCode;
 
 	@Column(name = "C_YEAR")
 	private Integer billCloseYear;
@@ -279,11 +279,13 @@ public class BillPunchDetailsModel implements Serializable {
 		this.bilId = bilId;
 	}
 
-	public Integer getRdcCode() {
+	
+
+	public String getRdcCode() {
 		return rdcCode;
 	}
 
-	public void setRdcCode(Integer rdcCode) {
+	public void setRdcCode(String rdcCode) {
 		this.rdcCode = rdcCode;
 	}
 

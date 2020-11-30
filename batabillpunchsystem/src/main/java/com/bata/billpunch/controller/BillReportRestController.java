@@ -911,7 +911,7 @@ public class BillReportRestController {
 
 					} else {
 
-						Integer x1 = Integer.parseInt(r.getCell(0).getStringCellValue());
+						String x1 =r.getCell(0).getStringCellValue();
 
 						Integer x2 = Integer.parseInt(r.getCell(1).getStringCellValue());
 
