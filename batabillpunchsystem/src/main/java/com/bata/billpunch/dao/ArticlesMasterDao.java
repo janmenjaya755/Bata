@@ -25,6 +25,9 @@ public interface ArticlesMasterDao extends JpaRepository<ArticlesMasterModel, Lo
 	@Query(nativeQuery = true, value = "select a.* from  tm_articles_master_dtls a where a.ART_NO like ?1 ")
 	public ArticlesMasterModel findWithArticleDetailsByCode(String artcode);
 	
-	@Query(nativeQuery = true,value = "SELECT a.ART_PRICE_MRP as purprice FROM tm_articles_master_dtls a where a.ART_NO like ?1")
-	public PriceInterface findWithPriceByArtno(String artno);
+	/*
+	 * @Query(nativeQuery = true,value =
+	 * "SELECT a.ART_PRICE_MRP as purprice FROM tm_articles_master_dtls a where a.ART_NO like ?1"
+	 * ) public PriceInterface findWithPriceByArtno(String artno);
+	 */
 }

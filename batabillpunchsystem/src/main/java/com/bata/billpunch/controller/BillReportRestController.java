@@ -849,7 +849,7 @@ public class BillReportRestController {
 
 			List<OrdersMasterModel> ord = null;
 			try {
-				ord = services.getDetailsAtrnoAndOrdnoDetails(xm.getArticleCode(), xm.getBillOrderNo());
+				ord = services.getDetailsAtrnoAndOrdnoDetails(xm.getArticleCode(), xm.getBillOrderNo(),xm.getPartyCode(),xm.getRdcCode());
 			} catch (Exception e) {
 			}
 

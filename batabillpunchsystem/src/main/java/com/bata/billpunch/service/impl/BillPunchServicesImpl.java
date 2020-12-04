@@ -2,6 +2,7 @@ package com.bata.billpunch.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
@@ -530,26 +532,27 @@ public class BillPunchServicesImpl {
 		return odao.findWithPairByOrderNoAndArtno(atrno, ordno);
 	}
 
-	public List<OrdersMasterModel> getDetailsAtrnoAndOrdnoDetails(String atrno, String ordno) {
+	public List<OrdersMasterModel> getDetailsAtrnoAndOrdnoDetails(String atrno, String ordno,String partycode, String rdcno) {
 
-		return odao.findWithByOrderNoAndArtno(atrno, ordno);
+		return odao.findWithByOrderNoAndArtno(atrno, ordno,partycode,rdcno);
 	}
 
 	public PriceInterface getPriceDetailsByartno(String atrno) {
-		return artdao.findWithPriceByArtno(atrno);
+		return odao.findWithPriceByArtno(atrno);
 	}
 
 	public List<BillPunchDetailsModel> getDetailsStrazaReport(List<String> partycode, String fromwk, String towk,
 			String yr) {
 
 		List<BillPunchDetailsModel> cm = null;
+		 
 
 		if (fromwk == null && towk == null) {
 			cm = bdao.findWithDetailsStrazaReportforAllWK(partycode, yr);
 		}
 
 		else {
-			cm = bdao.findWithDetailsStrazaReport(partycode, fromwk, towk, yr);
+			cm = bdao.findWithDetailsStrazaReport(partycode, StringUtils.leftPad(fromwk, 2, "0"), StringUtils.leftPad(towk, 2, "0"), yr);
 		}
 
 		return cm;

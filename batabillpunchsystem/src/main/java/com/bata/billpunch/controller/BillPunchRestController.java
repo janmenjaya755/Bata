@@ -36,6 +36,7 @@ import com.bata.billpunch.model.dto.BillPunchResponse;
 import com.bata.billpunch.model.dto.BillPunchResponseDto;
 import com.bata.billpunch.model.dto.BillPunchResponseInterface;
 import com.bata.billpunch.model.dto.BillPurchaseCostInterface;
+import com.bata.billpunch.model.dto.BillPurchaseStatusInterface;
 import com.bata.billpunch.model.dto.OrderPair;
 import com.bata.billpunch.model.dto.PartyResponseDto;
 import com.bata.billpunch.model.dto.PriceInterface;
@@ -299,10 +300,18 @@ public class BillPunchRestController {
 		TokenResponse response = restTemplate.postForEntity(tokenurl, request, TokenResponse.class).getBody();
 		List<BillPunchResponseDto> list = new ArrayList<>();
 		BillPurchaseCostInterface vm = null;
+		List<BillPunchResponseInterface> cm=null;
 		if (response.getStatus().contentEquals("True")) {
-
-			List<BillPunchResponseInterface> cm = mservices.getDetailsByBillNo(em.getInvoiceNO(), em.getPartyCode(),
-					em.getBillOrderNo(), em.getBillUniqueCode(), em.getStatus());
+			BillPurchaseStatusInterface st=mservices.getStatusByOrder(em.getBillOrderNo());
+			if(Optional.ofNullable(st).isPresent() && "manual".equalsIgnoreCase(st.getformType())) {
+				
+				cm = mservices.getDetailsByBillNoManual(em.getInvoiceNO(), em.getPartyCode(),
+						em.getBillOrderNo(), em.getBillUniqueCode(), em.getStatus());
+			}
+			 else {
+				 cm = mservices.getDetailsByBillNo(em.getInvoiceNO(), em.getPartyCode(),
+						em.getBillOrderNo(), em.getBillUniqueCode(), em.getStatus());
+			}
 
 			if (Optional.ofNullable(cm).isPresent()) {
 				for (BillPunchResponseInterface xm : cm) {
@@ -326,11 +335,15 @@ public class BillPunchRestController {
 					}
 
 					if ("manual".equalsIgnoreCase(xm.getformtype())) {
-
-						m.setPurchaseCost(Double.valueOf(xm.getpurchaseoffValue()));
+                       if(Optional.ofNullable(xm.getpurchaseoffValue()).isPresent()) {
+                    	   m.setPurchaseCost(Double.valueOf(xm.getpurchaseoffValue()));
+                       }
+						
 					} else {
-
-						m.setPurchaseCost(Double.valueOf(xm.getpurchaseCost()));
+						 if(Optional.ofNullable(xm.getpurchaseCost()).isPresent()) {
+							 m.setPurchaseCost(Double.valueOf(xm.getpurchaseCost()));
+	                       }
+						
 
 					}
 					list.add(m);
@@ -750,7 +763,7 @@ public class BillPunchRestController {
 				for (BillPunchDetailsModel xm : cm) {
 					StrazaPesponseDetailsModel vm = new StrazaPesponseDetailsModel();
 					List<OrdersMasterModel> ms = services.getDetailsAtrnoAndOrdnoDetails(xm.getArticleCode(),
-							xm.getBillOrderNo());
+							xm.getBillOrderNo(), xm.getPartyCode(), xm.getRdcCode());
 
 					vm.setBillOrderNo(xm.getBillOrderNo());
 					vm.setPartyCode(xm.getPartyCode());

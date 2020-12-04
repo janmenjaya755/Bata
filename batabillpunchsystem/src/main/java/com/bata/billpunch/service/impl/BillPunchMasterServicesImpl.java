@@ -36,6 +36,7 @@ import com.bata.billpunch.model.dto.AdonisFileDetailsInterface;
 import com.bata.billpunch.model.dto.BillPunchResponse;
 import com.bata.billpunch.model.dto.BillPunchResponseInterface;
 import com.bata.billpunch.model.dto.BillPurchaseCostInterface;
+import com.bata.billpunch.model.dto.BillPurchaseStatusInterface;
 import com.bata.billpunch.model.dto.PartyNameCodeDto;
 import com.bata.billpunch.model.dto.PartyResponseDto;
 import com.bata.billpunch.model.dto.PurchaseCostInterface;
@@ -117,9 +118,20 @@ public class BillPunchMasterServicesImpl {
 		return bdao.findWithBillNoPartyCodeAndOrderNoTest(invoiceNO, partycode, orederno, uniquecode, status);
 	}
 
+	public List<BillPunchResponseInterface> getDetailsByBillNoManual(String invoiceNO, String partycode, String orederno,
+			String uniquecode, String status) {
+
+		return bdao.findWithBillNoPartyCodeAndOrderNoManual(invoiceNO, partycode, orederno, uniquecode, status);
+	}
+
 	public BillPunchDetailsModel getDetailsByOrderNoAndInvoiceNo(String orderno, String invno) {
 
 		return bdao.findwithAllDetailsByOrderAndInvoice(orderno, invno);
+	}
+	
+	public BillPurchaseStatusInterface getStatusByOrder(String orderno) {
+
+		return bdao.findwithOrderNo(orderno);
 	}
 
 	public List<ArticlesMasterModel> findAll() {
