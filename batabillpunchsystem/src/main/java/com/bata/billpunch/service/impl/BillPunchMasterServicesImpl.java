@@ -129,9 +129,21 @@ public class BillPunchMasterServicesImpl {
 		return bdao.findwithAllDetailsByOrderAndInvoice(orderno, invno);
 	}
 	
-	public BillPurchaseStatusInterface getStatusByOrder(String orderno) {
+	public List<BillPurchaseStatusInterface> getStatusByOrder(String orderno,String invno,String partycode) {
+		
+		if (orderno == null) {
+			orderno = "%";
+		}
+		if (invno == null) {
+			invno = "%";
+		}
+		
+		if (partycode == null) {
+			partycode = "%";
+		}
 
-		return bdao.findwithOrderNo(orderno);
+
+		return bdao.findwithOrderNo(orderno,invno,partycode);
 	}
 
 	public List<ArticlesMasterModel> findAll() {
@@ -196,13 +208,13 @@ public class BillPunchMasterServicesImpl {
 					vm.setTcsApplicable(xm.getTcsApplicable());
 
 					if (!Optional.ofNullable(vm.getIgst()).isPresent()) {
-						vm.setIgst(0);
+						vm.setIgst("0");
 					}
 					if (!Optional.ofNullable(vm.getCgst()).isPresent()) {
-						vm.setCgst(0);
+						vm.setCgst("0");
 					}
 					if (!Optional.ofNullable(vm.getSgst()).isPresent()) {
-						vm.setSgst(0);
+						vm.setSgst("0");
 					}
 					if (!Optional.ofNullable(vm.getFreight()).isPresent()) {
 						vm.setFreight("0");
@@ -210,7 +222,7 @@ public class BillPunchMasterServicesImpl {
 					if (!Optional.ofNullable(vm.getCreditNote()).isPresent()) {
 						vm.setCreditNote(0d);
 					}
-					Double amt = vm.getPurchaseCost() + vm.getIgst() + vm.getCgst() + vm.getSgst() + vm.getCreditNote()
+					Double amt = vm.getPurchaseCost() + Integer.parseInt(vm.getIgst()) + Integer.parseInt(vm.getCgst()) + Integer.parseInt(vm.getSgst()) + vm.getCreditNote()
 							+ Integer.parseInt(vm.getFreight());
 					TCSmasterModel tcs = tcsdao.findAll().get(0);
 					vm.setTcsPercent(tcs.getTcsVaule());

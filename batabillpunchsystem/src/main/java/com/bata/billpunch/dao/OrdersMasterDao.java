@@ -30,8 +30,8 @@ public interface OrdersMasterDao extends JpaRepository<OrdersMasterModel, Long> 
 	@Query(nativeQuery = true, value = "SELECT sum(a.PURPRICE) as purchaseCost FROM tm_orders_master_dtls a where a.RDCNO like ?1 and a.ORDERNO like ?2 and a.PARTY_CODE like ?3 and a.ARTNO like ?4 group by a.RDCNO,a.ORDERNO,a.PARTY_CODE,a.ARTNO")
 	public BillPurchaseCostInterface findWithPurchaseCost(String rdcno, String orderno, String partycode, String artNo);
 
-	@Query(nativeQuery = true, value = "SELECT a.ORDER_PR as orderPr FROM tm_orders_master_dtls a where a.ARTNO like ?1 and  a.ORDERNO like ?2 ")
-	public OrderPair findWithPairByOrderNoAndArtno(String artno, String orderno);
+	@Query(nativeQuery = true, value = "SELECT a.ORDER_PR as orderPr FROM tm_orders_master_dtls a where a.ARTNO like ?1 and  a.ORDERNO like ?2 and  a.RDCNO like ?3 ")
+	public OrderPair findWithPairByOrderNoAndArtno(String artno, String orderno,String invno);
 
 	@Query(nativeQuery = true, value = "SELECT  distinct a.PURPRICE as purprice FROM tm_orders_master_dtls a where a.ARTNO like ?1")
 	public PriceInterface findWithPriceByArtno(String artno);

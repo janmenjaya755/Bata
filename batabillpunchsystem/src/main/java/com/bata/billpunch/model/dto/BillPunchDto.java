@@ -31,11 +31,11 @@ public class BillPunchDto {
 
 	private String formtype;
 
-	private Integer igst;
+	private String igst;
 
-	private Integer cgst;
+	private String cgst;
 
-	private Integer sgst;
+	private String sgst;
 
 	private Integer billCloseWeek;
 	
@@ -173,29 +173,7 @@ public class BillPunchDto {
 		this.formtype = formtype;
 	}
 
-	public Integer getIgst() {
-		return igst;
-	}
-
-	public void setIgst(Integer igst) {
-		this.igst = igst;
-	}
-
-	public Integer getCgst() {
-		return cgst;
-	}
-
-	public void setCgst(Integer cgst) {
-		this.cgst = cgst;
-	}
-
-	public Integer getSgst() {
-		return sgst;
-	}
-
-	public void setSgst(Integer sgst) {
-		this.sgst = sgst;
-	}
+	
 
 	public Integer getBillCloseWeek() {
 		return billCloseWeek;
@@ -446,6 +424,30 @@ public class BillPunchDto {
 
 	public void setTcsPercent(String tcsPercent) {
 		this.tcsPercent = tcsPercent;
+	}
+
+	public String getIgst() {
+		return igst;
+	}
+
+	public void setIgst(String igst) {
+		this.igst = igst;
+	}
+
+	public String getCgst() {
+		return cgst;
+	}
+
+	public void setCgst(String cgst) {
+		this.cgst = cgst;
+	}
+
+	public String getSgst() {
+		return sgst;
+	}
+
+	public void setSgst(String sgst) {
+		this.sgst = sgst;
 	}
 
 	

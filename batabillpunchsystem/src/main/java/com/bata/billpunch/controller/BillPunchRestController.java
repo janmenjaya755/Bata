@@ -300,65 +300,74 @@ public class BillPunchRestController {
 		TokenResponse response = restTemplate.postForEntity(tokenurl, request, TokenResponse.class).getBody();
 		List<BillPunchResponseDto> list = new ArrayList<>();
 		BillPurchaseCostInterface vm = null;
-		List<BillPunchResponseInterface> cm=null;
+		List<BillPunchResponseInterface> cm = null;
 		if (response.getStatus().contentEquals("True")) {
-			BillPurchaseStatusInterface st=mservices.getStatusByOrder(em.getBillOrderNo());
-			if(Optional.ofNullable(st).isPresent() && "manual".equalsIgnoreCase(st.getformType())) {
-				
-				cm = mservices.getDetailsByBillNoManual(em.getInvoiceNO(), em.getPartyCode(),
-						em.getBillOrderNo(), em.getBillUniqueCode(), em.getStatus());
-			}
-			 else {
-				 cm = mservices.getDetailsByBillNo(em.getInvoiceNO(), em.getPartyCode(),
-						em.getBillOrderNo(), em.getBillUniqueCode(), em.getStatus());
-			}
+			List<BillPurchaseStatusInterface> st = mservices.getStatusByOrder(em.getBillOrderNo(), em.getInvoiceNO(),
+					em.getPartyCode());
+			for (BillPurchaseStatusInterface bm : st) {
+				if (Optional.ofNullable(bm).isPresent()) {
 
-			if (Optional.ofNullable(cm).isPresent()) {
-				for (BillPunchResponseInterface xm : cm) {
-
-					BillPunchResponseDto m = new BillPunchResponseDto();
-					m.setInvoiceNO(xm.getinvoiceNO());
-					m.setBillOrderDate(xm.getbillOrderDate());
-					m.setBillOrderNo(xm.getbillOrderNo());
-					m.setFormtype(xm.getformtype());
-					m.setInvdate(xm.getinvdate());
-					m.setGrnDate(xm.getcnDate());
-					m.setBillWeek(xm.getbillWeek());
-					m.setInvAmount(xm.getrdcAmount());
-					m.setPartyCode(xm.getpartyCode());
-					m.setPartyName(xm.getpartyName());
-					m.setTcsApplicable(xm.gettcsApplicable());
-					m.setStatus(xm.getstatus());
-					if (Optional.ofNullable(xm.getdiscountAmt()).isPresent()) {
-						String s = xm.getdiscountAmt() + "%";
-						m.setDiscountAmt(s);
+					if ("manual".equalsIgnoreCase(bm.getformType())) {
+						cm = mservices.getDetailsByBillNoManual(em.getInvoiceNO(), em.getPartyCode(),
+								em.getBillOrderNo(), em.getBillUniqueCode(), em.getStatus());
 					}
 
-					if ("manual".equalsIgnoreCase(xm.getformtype())) {
-                       if(Optional.ofNullable(xm.getpurchaseoffValue()).isPresent()) {
-                    	   m.setPurchaseCost(Double.valueOf(xm.getpurchaseoffValue()));
-                       }
-						
-					} else {
-						 if(Optional.ofNullable(xm.getpurchaseCost()).isPresent()) {
-							 m.setPurchaseCost(Double.valueOf(xm.getpurchaseCost()));
-	                       }
-						
+				} else {
+					cm = mservices.getDetailsByBillNo(em.getInvoiceNO(), em.getPartyCode(), em.getBillOrderNo(),
+							em.getBillUniqueCode(), em.getStatus());
+				}
+				if (Optional.ofNullable(cm).isPresent()) {
+					for (BillPunchResponseInterface xm : cm) {
+
+						BillPunchResponseDto m = new BillPunchResponseDto();
+						m.setInvoiceNO(xm.getinvoiceNO());
+						m.setBillOrderDate(xm.getbillOrderDate());
+						m.setBillOrderNo(xm.getbillOrderNo());
+						m.setFormtype(xm.getformtype());
+						m.setInvdate(xm.getinvdate());
+						m.setGrnDate(xm.getcnDate());
+						m.setBillWeek(xm.getbillWeek());
+						m.setInvAmount(xm.getrdcAmount());
+						m.setPartyCode(xm.getpartyCode());
+						m.setPartyName(xm.getpartyName());
+						m.setTcsApplicable(xm.gettcsApplicable());
+						m.setStatus(xm.getstatus());
+						if (Optional.ofNullable(xm.gettcsPercent()).isPresent()) {
+							String s1 = xm.gettcsPercent() + "%";
+							m.setTcsPercent(s1);
+						}
+						if (Optional.ofNullable(xm.getdiscountAmt()).isPresent()) {
+							String s = xm.getdiscountAmt() + "%";
+							m.setDiscountAmt(s);
+						}
+
+						if ("manual".equalsIgnoreCase(xm.getformtype())) {
+							if (Optional.ofNullable(xm.getpurchaseoffValue()).isPresent()) {
+								m.setPurchaseCost(Double.valueOf(xm.getpurchaseoffValue()));
+							}
+
+						} else {
+							if (Optional.ofNullable(xm.getpurchaseCost()).isPresent()) {
+								m.setPurchaseCost(Double.valueOf(xm.getpurchaseCost()));
+							}
+
+						}
+						list.add(m);
 
 					}
-					list.add(m);
+
+				} else {
+					rs.setData(null);
+					rs.setStatus(ReraMessageConstants.FAILED_STATUS);
+					rs.setMessage(ReraMessageConstants.FAILED_MESSAGE);
 
 				}
-
-				rs.setStatus(ReraMessageConstants.SUCCESS_STATUS);
-				rs.setMessage(ReraMessageConstants.SUCCESS_MESSAGE);
-				rs.setData(list);
-			} else {
-				rs.setData(null);
-				rs.setStatus(ReraMessageConstants.FAILED_STATUS);
-				rs.setMessage(ReraMessageConstants.FAILED_MESSAGE);
-
 			}
+
+			rs.setStatus(ReraMessageConstants.SUCCESS_STATUS);
+			rs.setMessage(ReraMessageConstants.SUCCESS_MESSAGE);
+			rs.setData(list);
+
 		} else
 
 		{
@@ -978,9 +987,9 @@ public class BillPunchRestController {
 	/********************************************************************************************
 	 * Find All bill punch artno and ordno data
 	 ********************************************************************************************/
-	@GetMapping("/get-pair-details-by-atrno-ordno/{atrno}/{ordno}")
+	@GetMapping("/get-pair-details-by-atrno-ordno/{atrno}/{ordno}/{invno}")
 	public ResponseEntity<ResponseModel> getAllArtNoAndOrdNoDetails(HttpServletRequest req,
-			@PathVariable("atrno") String atrno, @PathVariable("ordno") String ordno) {
+			@PathVariable("atrno") String atrno, @PathVariable("ordno") String ordno, @PathVariable("invno") String invno) {
 
 		ResponseModel rs = new ResponseModel();
 		RestTemplate restTemplate = new RestTemplate();
@@ -989,7 +998,7 @@ public class BillPunchRestController {
 		TokenResponse response = restTemplate.postForEntity(tokenurl, request, TokenResponse.class).getBody();
 
 		if (response.getStatus().contentEquals("True")) {
-			OrderPair cm = services.getAllAtrnoAndOrdnoDetails(atrno, ordno);
+			OrderPair cm = services.getAllAtrnoAndOrdnoDetails(atrno, ordno,invno);
 
 			if (Optional.ofNullable(cm).isPresent()) {
 				rs.setStatus(ReraMessageConstants.SUCCESS_STATUS);

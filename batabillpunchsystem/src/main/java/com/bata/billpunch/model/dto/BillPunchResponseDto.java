@@ -20,11 +20,13 @@ public class BillPunchResponseDto {
 	private Double purchaseCost;
 
 	private String discountAmt;
-	
+
+	private String tcsPercent;
+
 	private String invdate;
-	
+
 	private String grnDate;
-	
+
 	private String billWeek;
 
 	private String status;
@@ -32,10 +34,8 @@ public class BillPunchResponseDto {
 	private String invoiceNO;
 
 	private Double invAmount;
-	
+
 	private String tcsApplicable;
-	
-	
 
 	public String getGrnDate() {
 		return grnDate;
@@ -149,5 +149,12 @@ public class BillPunchResponseDto {
 		this.billWeek = billWeek;
 	}
 
-	
+	public String getTcsPercent() {
+		return tcsPercent;
+	}
+
+	public void setTcsPercent(String tcsPercent) {
+		this.tcsPercent = tcsPercent;
+	}
+
 }

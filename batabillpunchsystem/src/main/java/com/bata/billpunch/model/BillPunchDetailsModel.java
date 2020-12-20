@@ -32,8 +32,8 @@ public class BillPunchDetailsModel implements Serializable {
 
 	@Id
 	@Column(name = "BIL_ID")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bil_punch_Sequence")
-	@SequenceGenerator(name = "bil_punch_Sequence", sequenceName = "BILL_PUNCH_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bil_pun_Sequence")
+	@SequenceGenerator(name = "bil_pun_Sequence", sequenceName = "BILL_PUN_SEQ", allocationSize = 1)
 	private Long bilId;
 
 	@Column(name = "RDC_CODE")
@@ -160,13 +160,13 @@ public class BillPunchDetailsModel implements Serializable {
 	private String hsnCode;
 
 	@Column(name = "IGST_RT")
-	private Integer igst;
+	private String igst;
 
 	@Column(name = "CGST_RT")
-	private Integer cgst;
+	private String cgst;
 
 	@Column(name = "SGST_RT")
-	private Integer sgst;
+	private String sgst;
 
 	@Column(name = "IGST_AMT")
 	private Double igstamt;
@@ -602,27 +602,28 @@ public class BillPunchDetailsModel implements Serializable {
 		this.hsnCode = hsnCode;
 	}
 
-	public Integer getIgst() {
+	
+	public String getIgst() {
 		return igst;
 	}
 
-	public void setIgst(Integer igst) {
+	public void setIgst(String igst) {
 		this.igst = igst;
 	}
 
-	public Integer getCgst() {
+	public String getCgst() {
 		return cgst;
 	}
 
-	public void setCgst(Integer cgst) {
+	public void setCgst(String cgst) {
 		this.cgst = cgst;
 	}
 
-	public Integer getSgst() {
+	public String getSgst() {
 		return sgst;
 	}
 
-	public void setSgst(Integer sgst) {
+	public void setSgst(String sgst) {
 		this.sgst = sgst;
 	}
 

@@ -163,6 +163,7 @@ public class BillPunchServicesImpl {
 							entity.setStateCode(pm.getStateCode());
 							entity.setShopName(pm.getShopName());
 							entity.setStatus(pm.getStatus());
+						//	entity.setGstamt(Double.valueOf(pm.getIgst()+pm.getCgst()+pm.getSgst()));
 							entity.setIgst(pm.getIgst());
 							entity.setCgst(pm.getCgst());
 							entity.setSgst(pm.getSgst());
@@ -265,6 +266,7 @@ public class BillPunchServicesImpl {
 					entity.setShopName(pm.getShopName());
 					entity.setShopNo(pm.getShopNo());
 					entity.setStatus(pm.getStatus());
+					//entity.setGstamt(Double.valueOf(pm.getIgst()+pm.getCgst()+pm.getSgst()));
 					entity.setIgst(pm.getIgst());
 					entity.setCgst(pm.getCgst());
 					entity.setSgst(pm.getSgst());
@@ -472,7 +474,7 @@ public class BillPunchServicesImpl {
 	}
 
 	public List<BillPunchDetailsModel> getAllRdcDetails() {
-		return bdao.findAll();
+		return bdao.findWithAll();
 	}
 
 	public List<PartyResponseDto> getAllPartycodeAndPartyName() {
@@ -527,9 +529,11 @@ public class BillPunchServicesImpl {
 		return bdao.findWithBillCloseWeek();
 	}
 
-	public OrderPair getAllAtrnoAndOrdnoDetails(String atrno, String ordno) {
+	public OrderPair getAllAtrnoAndOrdnoDetails(String atrno, String ordno,String invno) {
+		
+		
 
-		return odao.findWithPairByOrderNoAndArtno(atrno, ordno);
+		return odao.findWithPairByOrderNoAndArtno(atrno, ordno, StringUtils.leftPad(invno.substring(2, 6), 5, "0"));
 	}
 
 	public List<OrdersMasterModel> getDetailsAtrnoAndOrdnoDetails(String atrno, String ordno,String partycode, String rdcno) {

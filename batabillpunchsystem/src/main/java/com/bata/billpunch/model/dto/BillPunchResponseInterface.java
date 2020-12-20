@@ -39,5 +39,8 @@ public interface BillPunchResponseInterface {
 	public String getcnDate();
 
 	public String gettcsApplicable();
+	
+	public String gettcsPercent();
+	
 
 }

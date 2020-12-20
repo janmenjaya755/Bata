@@ -199,8 +199,8 @@ public class BillReportRestController {
 								date11.substring(6, 10), date11.substring(0, 2), date11.substring(3, 5),
 								date11.substring(6, 10), vm.getResumeInvNo(), "     ", date111.substring(0, 2),
 								date111.substring(3, 5), date111.substring(6, 10), vm.getResumeInvNoTwo(), "     ",
-								"  ", art.getArtstndcost(), String.valueOf(vm.getCgst() / 100),
-								String.valueOf(vm.getSgst() / 100), String.valueOf(vm.getIgst() / 100), "     "));
+								"  ", art.getArtstndcost(), String.valueOf(Integer.parseInt(vm.getCgst()) / 100),
+								String.valueOf(Integer.parseInt(vm.getSgst()) / 100), String.valueOf(Integer.parseInt(vm.getIgst()) / 100), "     "));
 
 						for (int i = 0; i < list1.size(); i++) {
 							String s1 = list1.get(i);
@@ -342,9 +342,9 @@ public class BillReportRestController {
 								amt, vm.getRecptInvNo(), recdate, vm.getResumeInvNo(), date.substring(0, 2),
 								date.substring(3, 5), date.substring(6, 10), vm.getResumeInvNoTwo(),
 								vm.getBillOrderNo(), "        ", vm.getBillOrderNo(), art.getArtstndcost(), "     ",
-								String.valueOf(vm.getCgst() / 100), String.valueOf(vm.getCgstamt()),
-								String.valueOf(vm.getSgst() / 100), String.valueOf(vm.getSgstamt()),
-								String.valueOf(vm.getIgst() / 100), String.valueOf(vm.getIgstamt())));
+								String.valueOf(Integer.parseInt(vm.getCgst()) / 100), String.valueOf(vm.getCgstamt()),
+								String.valueOf(Integer.parseInt(vm.getSgst()) / 100), String.valueOf(vm.getSgstamt()),
+								String.valueOf(Integer.parseInt(vm.getIgst()) / 100), String.valueOf(vm.getIgstamt())));
 						for (int i = 0; i < list1.size(); i++) {
 							String s1 = list1.get(i);
 							int size = list.get(i);
@@ -379,11 +379,9 @@ public class BillReportRestController {
 								}
 							}
 							writer.write(w1);
-
 						}
 
 						writer.write("\r\n");
-
 					}
 
 					writer.close();
@@ -408,7 +406,8 @@ public class BillReportRestController {
 	 ********************************************************************************************/
 	@SuppressWarnings("all")
 	@GetMapping("/get-bill-punch-contract-batch-report-details/{wk}")
-	public ResponseEntity<ResponseModel> getReportForContractBatchFile(HttpServletRequest req, @PathVariable("wk") String wk) throws IOException {
+	public ResponseEntity<ResponseModel> getReportForContractBatchFile(HttpServletRequest req,
+			@PathVariable("wk") String wk) throws IOException {
 		ResponseModel rs = new ResponseModel();
 		RestTemplate restTemplate = new RestTemplate();
 		TokenRequest request = new TokenRequest();
@@ -762,7 +761,8 @@ public class BillReportRestController {
 	 ********************************************************************************************/
 	@SuppressWarnings("all")
 	@GetMapping("/get-bill-punch-xl-report-details-for-supply/{wk}")
-	public ResponseEntity<ResponseModel> getXlReport(HttpServletRequest req, @PathVariable("wk") String wk) throws IOException {
+	public ResponseEntity<ResponseModel> getXlReport(HttpServletRequest req, @PathVariable("wk") String wk)
+			throws IOException {
 		ResponseModel rs = new ResponseModel();
 		RestTemplate restTemplate = new RestTemplate();
 		TokenRequest request = new TokenRequest();
@@ -834,6 +834,7 @@ public class BillReportRestController {
 		}
 
 	}
+
 	@SuppressWarnings("all")
 	private void writeDataLines(List<BillPunchDetailsModel> result, XSSFSheet sheet) throws SQLException {
 		int rowCount = 1;
@@ -849,7 +850,8 @@ public class BillReportRestController {
 
 			List<OrdersMasterModel> ord = null;
 			try {
-				ord = services.getDetailsAtrnoAndOrdnoDetails(xm.getArticleCode(), xm.getBillOrderNo(),xm.getPartyCode(),xm.getRdcCode());
+				ord = services.getDetailsAtrnoAndOrdnoDetails(xm.getArticleCode(), xm.getBillOrderNo(),
+						xm.getPartyCode(), xm.getRdcCode());
 			} catch (Exception e) {
 			}
 
@@ -910,184 +912,192 @@ public class BillReportRestController {
 					if (r.getRowNum() == 0) {
 
 					} else {
-
-						String x1 =r.getCell(0).getStringCellValue();
-
-						Integer x2 = Integer.parseInt(r.getCell(1).getStringCellValue());
-
-						Integer x3 = Integer.parseInt(r.getCell(2).getStringCellValue());
-
-						Integer x4 = Integer.parseInt(r.getCell(3).getStringCellValue());
-
-						Date x5 = r.getCell(4).getDateCellValue();
-
-						Integer x6 = Integer.parseInt(r.getCell(5).getStringCellValue());
-
-						String x7 = r.getCell(6).getStringCellValue().trim();
-
-						String x8 = r.getCell(7).getStringCellValue();
-
-						Integer x9 = Integer.parseInt(r.getCell(8).getStringCellValue());
-
-						String x10 = r.getCell(9).getStringCellValue();
-
-						String x11 = r.getCell(10).getStringCellValue();
-
-						String x12 = r.getCell(11).getStringCellValue();
-
-						Integer x13 = Integer.parseInt(r.getCell(12).getStringCellValue());
-
-						Integer x14 = Integer.parseInt(r.getCell(13).getStringCellValue());
-
-						Integer x15 = Integer.parseInt(r.getCell(14).getStringCellValue());
-
-						Integer x16 = Integer.parseInt(r.getCell(15).getStringCellValue());
-
-						Integer x17 = Integer.parseInt(r.getCell(16).getStringCellValue());
-
-						Integer x18 = Integer.parseInt(r.getCell(17).getStringCellValue());
-
-						Integer x19 = Integer.parseInt(r.getCell(18).getStringCellValue());
-
-						Integer x20 = Integer.parseInt(r.getCell(19).getStringCellValue());
-
-						Integer x21 = Integer.parseInt(r.getCell(20).getStringCellValue());
-
-						String x22 = r.getCell(21).getStringCellValue();
-
-						String x24 = r.getCell(23).getStringCellValue();
-
-						String x25 = r.getCell(24).getStringCellValue();
-
-						String x28 = r.getCell(27).getStringCellValue();
-
-						String d29 = r.getCell(28).getStringCellValue();
-						String s2 = d29.substring(2, 4);
-						String s3 = d29.substring(4, 8);
-						String sn = d29.substring(0, 2).concat("-") + s2.concat("-") + s3;
-						Date x29 = new SimpleDateFormat("dd-MM-yyyy").parse(sn);
-
-						Integer x30 = Integer.parseInt(r.getCell(29).getStringCellValue());
-
-						String x33 = r.getCell(32).getStringCellValue();
-
-						Double x34 = Double.valueOf(r.getCell(33).getStringCellValue());
-
-						String x35 = r.getCell(34).getStringCellValue().trim();
-
-						String d36 = r.getCell(35).getStringCellValue();
-
-						String s22 = d36.substring(2, 4);
-						String s33 = d36.substring(4, 8);
-						String snn = d36.substring(0, 2).concat("-") + s22.concat("-") + s33;
-						Date x36 = new SimpleDateFormat("dd-MM-yyyy").parse(snn);
-
-						String x40 = r.getCell(39).getStringCellValue().trim();
-
-						System.out.println(r.getCell(40).getStringCellValue());
-						String x41 = r.getCell(40).getStringCellValue();
-
-						Double x42 = Double.valueOf(r.getCell(41).getStringCellValue());
-
-						Integer x43 = Integer.parseInt(r.getCell(42).getStringCellValue());
-
-						Double x44 = Double.valueOf(r.getCell(43).getStringCellValue());
-
-						Integer x45 = Integer.parseInt(r.getCell(44).getStringCellValue());
-
-						Double x46 = Double.valueOf(r.getCell(45).getStringCellValue());
-
-						Integer x47 = Integer.parseInt(r.getCell(46).getStringCellValue());
-
-						Double x48 = Double.valueOf(r.getCell(47).getStringCellValue());
-
-						Double x49 = Double.valueOf(r.getCell(48).getStringCellValue());
-						Integer x50 = Integer.parseInt(r.getCell(49).getStringCellValue());
-
-						Integer x51 = Integer.parseInt(r.getCell(50).getStringCellValue());
-
-						BillPunchDetailsModel xm = new BillPunchDetailsModel();
-
-						xm.setRdcCode(x1);
-						xm.setBillCloseWeek(x2);
-						xm.setBillCloseYear(x3);
-						xm.setBillWeekDay(x4);
-						xm.setTranDate(x5);
-						xm.setTranCode(x6);
-						xm.setInvoiceNO(x7);
-						xm.setArticleCode(x8);
 						try {
-							xm.setArticleName(
-									aservices.getArticleDetails(r.getCell(7).getStringCellValue()).getArtname());
+
+							String x1 = r.getCell(0).getStringCellValue();
+
+							Integer x2 = Integer.parseInt(r.getCell(1).getStringCellValue());
+
+							Integer x3 = Integer.parseInt(r.getCell(2).getStringCellValue());
+
+							Integer x4 = Integer.parseInt(r.getCell(3).getStringCellValue());
+
+							Date x5 = r.getCell(4).getDateCellValue();
+
+							Integer x6 = Integer.parseInt(r.getCell(5).getStringCellValue());
+
+							String x7 = r.getCell(6).getStringCellValue().trim();
+
+							String x8 = r.getCell(7).getStringCellValue();
+
+							Integer x9 = Integer.parseInt(r.getCell(8).getStringCellValue());
+
+							String x10 = r.getCell(9).getStringCellValue();
+
+							String x11 = r.getCell(10).getStringCellValue();
+
+							String x12 = r.getCell(11).getStringCellValue();
+
+							Integer x13 = Integer.parseInt(r.getCell(12).getStringCellValue());
+
+							Integer x14 = Integer.parseInt(r.getCell(13).getStringCellValue());
+
+							Integer x15 = Integer.parseInt(r.getCell(14).getStringCellValue());
+
+							Integer x16 = Integer.parseInt(r.getCell(15).getStringCellValue());
+
+							Integer x17 = Integer.parseInt(r.getCell(16).getStringCellValue());
+
+							Integer x18 = Integer.parseInt(r.getCell(17).getStringCellValue());
+
+							Integer x19 = Integer.parseInt(r.getCell(18).getStringCellValue());
+
+							Integer x20 = Integer.parseInt(r.getCell(19).getStringCellValue());
+
+							Integer x21 = Integer.parseInt(r.getCell(20).getStringCellValue());
+
+							String x22 = r.getCell(21).getStringCellValue();
+
+							String x24 = r.getCell(23).getStringCellValue();
+
+							String x25 = r.getCell(24).getStringCellValue();
+
+							String x28 = r.getCell(27).getStringCellValue();
+
+							String d29 = r.getCell(28).getStringCellValue();
+							String s2 = d29.substring(2, 4);
+							String s3 = d29.substring(4, 8);
+							String sn = d29.substring(0, 2).concat("-") + s2.concat("-") + s3;
+							Date x29 = new SimpleDateFormat("dd-MM-yyyy").parse(sn);
+
+							Integer x30 = Integer.parseInt(r.getCell(29).getStringCellValue());
+
+							String x33 = r.getCell(32).getStringCellValue();
+
+							Double x34 = Double.valueOf(r.getCell(33).getStringCellValue());
+
+							String x35 = r.getCell(34).getStringCellValue().trim();
+
+							String d36 = r.getCell(35).getStringCellValue();
+
+							String s22 = d36.substring(2, 4);
+							String s33 = d36.substring(4, 8);
+							String snn = d36.substring(0, 2).concat("-") + s22.concat("-") + s33;
+							Date x36 = new SimpleDateFormat("dd-MM-yyyy").parse(snn);
+
+							String x40 = r.getCell(39).getStringCellValue().trim();
+
+							System.out.println(r.getCell(40).getStringCellValue());
+							String x41 = r.getCell(40).getStringCellValue();
+
+							Double x42 = Double.valueOf(r.getCell(41).getStringCellValue());
+
+							String x43 = r.getCell(42).getStringCellValue();
+
+							Double x44 = Double.valueOf(r.getCell(43).getStringCellValue());
+
+							String x45 = r.getCell(44).getStringCellValue();
+
+							Double x46 = Double.valueOf(r.getCell(45).getStringCellValue());
+
+							String x47 = r.getCell(46).getStringCellValue();
+
+							Double x48 = Double.valueOf(r.getCell(47).getStringCellValue());
+
+							Double x49 = Double.valueOf(r.getCell(48).getStringCellValue());
+							Integer x50 = Integer.parseInt(r.getCell(49).getStringCellValue());
+
+							Integer x51 = Integer.parseInt(r.getCell(50).getStringCellValue());
+
+							BillPunchDetailsModel xm = new BillPunchDetailsModel();
+
+							xm.setRdcCode(x1);
+							xm.setBillCloseWeek(x2);
+							xm.setBillCloseYear(x3);
+							xm.setBillWeekDay(x4);
+							xm.setTranDate(x5);
+							xm.setTranCode(x6);
+							xm.setInvoiceNO(x7);
+							xm.setArticleCode(x8);
+							try {
+								xm.setArticleName(
+										aservices.getArticleDetails(r.getCell(7).getStringCellValue()).getArtname());
+							} catch (Exception e) {
+							}
+
+							xm.setSizeCode(x9);
+							xm.setBillWeekYear(x10);
+							xm.setWeekYear(x11);
+							xm.setShopNo(x12);
+							try {
+								xm.setShopName(
+										sservices.getShopDetails(r.getCell(11).getStringCellValue()).getShopname());
+							} catch (Exception e) {
+							}
+
+							xm.setDistcode(x13);
+							xm.setInvType(x14);
+							xm.setRdcPair(x15);
+							xm.setPair(x16);
+							xm.setPackCaseB(x17);
+							xm.setPackCaseM(x18);
+							xm.setPackCaseS(x19);
+							xm.setPackCaseC(x20);
+							xm.setPackCaseT(x21);
+							xm.setDcCode(x22);
+							xm.setBillUniqueCode(x24);
+							xm.setParty(x25);
+
+							try {
+								xm.setPartyCode(mservices.getOrderDetails(x40).get(0).getPartyCode());
+
+							} catch (Exception e) {
+							}
+
+							try {
+								xm.setPartyName(pservices
+										.getPartiesDetails(
+												StringUtils.leftPad(r.getCell(24).getStringCellValue(), 4, "0"))
+										.getPartyfullname());
+							} catch (Exception e) {
+							}
+
+							xm.setCnNo(x28);
+							xm.setCnDate(x29);
+							xm.setGrnDate(x29);
+							xm.setTrnsportCode(x30);
+							xm.setStateCode(x33);
+							try {
+								xm.setStateName(
+										stservices.getStateDetails(r.getCell(32).getStringCellValue()).getStateName());
+							} catch (Exception e) {
+							}
+
+							xm.setInvoiceCost(x34);
+							xm.setRecptInvNo(x35);
+							xm.setGrNo(x35);
+							xm.setRecptInvDate(x36);
+							xm.setGrDate(x36);
+							xm.setBillOrderNo(x40);
+							xm.setBillOrderDate(x36);
+							xm.setHsnCode(x41);
+							xm.setGstamt(x42);
+							// xm.setGstamt(x44+x46+x48);
+							xm.setCgst(x43);
+							xm.setCgstamt(x44);
+							xm.setSgst(x45);
+							xm.setSgstamt(x46);
+							xm.setIgst(x47);
+							xm.setIgstamt(x48);
+							xm.setPairAmount(x49);
+							xm.setFromState(x50);
+							xm.setToState(x51);
+							xm.setStatus("RECORD_RECEIVED");
+							BillPunchDetailsModel demo = services.saveXl(xm);
+
 						} catch (Exception e) {
+							e.printStackTrace();
 						}
-
-						xm.setSizeCode(x9);
-						xm.setBillWeekYear(x10);
-						xm.setWeekYear(x11);
-						xm.setShopNo(x12);
-						try {
-							xm.setShopName(sservices.getShopDetails(r.getCell(11).getStringCellValue()).getShopname());
-						} catch (Exception e) {
-						}
-
-						xm.setDistcode(x13);
-						xm.setInvType(x14);
-						xm.setRdcPair(x15);
-						xm.setPair(x16);
-						xm.setPackCaseB(x17);
-						xm.setPackCaseM(x18);
-						xm.setPackCaseS(x19);
-						xm.setPackCaseC(x20);
-						xm.setPackCaseT(x21);
-						xm.setDcCode(x22);
-						xm.setBillUniqueCode(x24);
-						xm.setParty(x25);
-
-						try {
-							xm.setPartyCode(mservices.getOrderDetails(x40).get(0).getPartyCode());
-
-						} catch (Exception e) {
-						}
-
-						try {
-							xm.setPartyName(
-									pservices.getPartiesDetails(StringUtils.leftPad(r.getCell(24).getStringCellValue(), 4, "0")).getPartyfullname());
-						} catch (Exception e) {
-						}
-
-						xm.setCnNo(x28);
-						xm.setCnDate(x29);
-						xm.setGrnDate(x29);
-						xm.setTrnsportCode(x30);
-						xm.setStateCode(x33);
-						try {
-							xm.setStateName(
-									stservices.getStateDetails(r.getCell(32).getStringCellValue()).getStateName());
-						} catch (Exception e) {
-						}
-
-						xm.setInvoiceCost(x34);
-						xm.setRecptInvNo(x35);
-						xm.setGrNo(x35);
-						xm.setRecptInvDate(x36);
-						xm.setGrDate(x36);
-						xm.setBillOrderNo(x40);
-						xm.setBillOrderDate(x36);
-						xm.setHsnCode(x41);
-						xm.setGstamt(x42);
-						xm.setCgst(x43);
-						xm.setCgstamt(x44);
-						xm.setSgst(x45);
-						xm.setSgstamt(x46);
-						xm.setIgst(x47);
-						xm.setIgstamt(x48);
-						xm.setPairAmount(x49);
-						xm.setFromState(x50);
-						xm.setToState(x51);
-						xm.setStatus("RECORD_RECEIVED");
-						BillPunchDetailsModel demo = services.saveXl(xm);
-
 					}
 
 				}

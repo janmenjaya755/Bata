@@ -19,7 +19,7 @@ public interface PartiesMasterDao extends JpaRepository<PartiesMasterModel, Long
 		@Query(nativeQuery = true ,value="TRUNCATE TABLE tm_parties_master_dtls")
 		 void findWithDeleteAll();
 		
-		@Query(nativeQuery = true,value = "SELECT distinct  a.PARTY_NO as partycode,a.PARTY_FULL_NAME as partyname FROM TM_PARTIES_MASTER_DTLS a ")
+		@Query(nativeQuery = true,value = "SELECT distinct  a.PARTY_CODE as partycode,a.PARTY_NAME as partyname FROM TT_BILL_PUNCH_DTLS_ONE a where a.PARTY_CODE is not null")
 		public List<PartyResponseDto> findWithAllPartycodeAndPartyName();
 		
 		@Query(nativeQuery = true,value = "SELECT   a.* FROM TM_PARTIES_MASTER_DTLS a  where a.PARTY_NO like ?1")
