@@ -112,7 +112,7 @@ public class BillReportRestController {
 	}
 
 	/********************************************************************************************
-	 * Find All bill punch edp reports
+	 * Find All bill punch edp reports bill punch
 	 ********************************************************************************************/
 	@SuppressWarnings("all")
 	@GetMapping("/get-bill-punch-edp-report-details/{wk}")
@@ -123,7 +123,7 @@ public class BillReportRestController {
 		request.setToken(getToken(req));
 		TokenResponse response = restTemplate.postForEntity(tokenurl, request, TokenResponse.class).getBody();
 
-		List<Integer> list = new ArrayList<>();
+		List<Integer> list = new ArrayList<Integer>();
 		list.addAll(Arrays.asList(1, 6, 1, 1, 3, 5, 15, 3, 5, 5, 5, 11, 11, 7, 11, 3, 1, 1, 4, 2, 15, 2, 2, 4, 20, 10,
 				2, 11, 15, 2, 2, 4, 2, 2, 4, 2, 5, 2, 2, 4, 10, 5, 2, 11, 11, 11, 11, 5));
 

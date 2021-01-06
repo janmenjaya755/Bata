@@ -22,7 +22,7 @@ public interface BillPunchDetailsDao extends JpaRepository<BillPunchDetailsModel
 
 	public void save(List<BillPunchDetailsModel> mn);
 	
-	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where a.STATUS='APPROVED'")
+	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a ")
 	public List<BillPunchDetailsModel> findWithAll();
 
 	@Modifying
@@ -78,20 +78,20 @@ public interface BillPunchDetailsDao extends JpaRepository<BillPunchDetailsModel
 	@Query(nativeQuery = true, value = "SELECT a.* FROM TT_BILL_PUNCH_DTLS_ONE a where a.PARTY like ?1 and a.PARTY_NAME like ?2")
 	public List<BillPunchDetailsModel> findAllPartycodeAndPartyNameDetails(String partycode, String partyname);
 
-	@Query(nativeQuery = true, value = "SELECT a.ORD_NO as billOrderNo,a.PRCH_BIL_VAL as purchaseCost,a.BIL_ID as billId,a.TR_INV_NO as invoiceNO,a.C_WEEK as billCloseWeek ,a.STATUS as status FROM TT_BILL_PUNCH_DTLS_ONE a  where a.STATUS='APPROVED' and a.C_WEEK like ?1")
+	@Query(nativeQuery = true, value = "SELECT a.ORD_NO as billOrderNo,a.PRCH_BIL_VAL as purchaseCost,a.BIL_ID as billId,a.TR_INV_NO as invoiceNO,a.WK as billCloseWeek ,a.STATUS as status FROM TT_BILL_PUNCH_DTLS_ONE a  where a.STATUS='APPROVED' and a.WK like ?1")
 	public List<BillCloseStatusDto> findWithApprovedRecords(String billcloseweek);
 
 	@Query(nativeQuery = true, value = "SELECT a.* FROM TT_BILL_PUNCH_DTLS_ONE a where a.STATUS in('SUBMITTED','APPROVED')")
 	public List<BillPunchDetailsModel> finfWithStatus();
 
-	@Query(nativeQuery = true, value = "SELECT distinct a.C_WEEK as billCloseWeek FROM TT_BILL_PUNCH_DTLS_ONE a  where a.STATUS='APPROVED' order by  a.C_WEEK DESC ")
+	@Query(nativeQuery = true, value = "SELECT distinct a.WK as billCloseWeek FROM TT_BILL_PUNCH_DTLS_ONE a  where a.STATUS='APPROVED' order by  a.WK DESC ")
 	public List<BillCloseStatusDto> findWithBillCloseWeek();
 
-	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and a.WK >=:fromwk and a.WK <=:towk and (COALESCE(:yr, null) is null or a.YR in :yr) and a.STATUS='APPROVED'")
+	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and a.WK >=:fromwk and a.WK <=:towk and (COALESCE(:yr, null) is null or a.YR in :yr)")
 	public List<BillPunchDetailsModel> findWithDetailsStrazaReport(@Param("partycode") List<String> partycode,
 			@Param("fromwk") String fromwk, @Param("towk") String towk, @Param("yr") String yr);
 
-	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:yr, null) is null or a.YR in :yr) and a.STATUS='APPROVED'")
+	@Query(nativeQuery = true, value = "select a.* from  TT_BILL_PUNCH_DTLS_ONE a where (COALESCE(:partycode, null) is null or a.PARTY_CODE in :partycode) and (COALESCE(:yr, null) is null or a.YR in :yr)")
 	public List<BillPunchDetailsModel> findWithDetailsStrazaReportforAllWK(@Param("partycode") List<String> partycode,
 			@Param("yr") String yr);
 	
